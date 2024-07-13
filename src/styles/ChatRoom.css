@@ -1,0 +1,58 @@
+.chatroom-container {
+    display: flex;
+    flex-direction: column;
+    height: 90vh; 
+    width: 40%;
+    overflow-y: auto; 
+    margin-top: 20px;
+    overflow-x: hidden;
+    position: relative; 
+  }
+
+
+.chatroom-header {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid #006bdd 
+  }
+
+  .messages {
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Messages div takes up remaining space allocated for it in chatroom-container*/ 
+    margin-top: 10px; 
+  }
+  
+
+
+  .message-form {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    background-color: #f0f0f0;
+    position: sticky;
+    bottom: 0;
+  }
+  
+  .message-form input {
+    flex: 1; 
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-right: 10px; 
+  }
+  
+  .message-form button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }

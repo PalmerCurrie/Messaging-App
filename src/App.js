@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
-import SignIn from "./SignIn.js";
-import SignOut from "./SignOut.js"
-import ChatRoom from "./ChatRoom.js";
+import SignIn from './components/SignIn.js';
+import SignOut from './components/SignOut.js';
+import ChatRoom from "./components/ChatRoom.js";
 
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
@@ -34,10 +34,9 @@ function App() {
   return (
     <div className="App">
 
-      <section >
+      <div className='page'>
         {user ? <ChatRoom user={user} firestore={firestore} /> : <SignIn auth={auth} />}
-        {user ? <SignOut auth={auth} /> : ""  }
-      </section>
+      </div>
     </div>
   );
 }

@@ -2,10 +2,11 @@ import ChatMessage from './ChatMessage.js'
 import { useRef, useState } from 'react';
 import { collection, query, orderBy, limit, serverTimestamp, addDoc  } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import "../styles/ChatRoom.css";
 
 
 function ChatRoom( {user, firestore } ) {
-    // When user adds a new message to chat, it creates a document in the database collection
+  // When user adds a new message to chat, it creates a document in the database collection
     
   // Reference the Firestore collection
   const messagesRef = collection(firestore, 'messages');
@@ -27,21 +28,22 @@ function ChatRoom( {user, firestore } ) {
 
         const { uid, photoURL } = user;
 
-        // Create new document in 'messages' database
-        // takes JavaScript object as argument
-        try {
-            await addDoc(messagesRef, {
-                text: formValue,
-                createdAt: serverTimestamp(),
-                uid,
-                photoURL
-            });
+        // Create new document in 'messages' database, takes JavaScript object as argument
+        if (formValue !== "") {
+            try {
+                await addDoc(messagesRef, {
+                    text: formValue,
+                    createdAt: serverTimestamp(),
+                    uid,
+                    photoURL
+                });
 
-            setFormValue('');
+                setFormValue('');
 
-            scrollDown.current.scrollIntoView( { behavior: 'smooth' } );
-        } catch (error) {
-            console.error('Error adding message: ', error);
+                scrollDown.current.scrollIntoView( { behavior: 'smooth' } );
+            } catch (error) {
+                console.error('Error adding message: ', error);
+            }
         }
     } 
 
@@ -58,18 +60,25 @@ function ChatRoom( {user, firestore } ) {
 
     return (
       <div className='chatroom-container'>
-        <main>
+        <div className='chatroom-header'>
+            <h2>Chat Room</h2>
+            {/* Add any additional elements for the header/bar here */}
+        </div>
+        <div className='messages'>
             {messages && messages.map(msg => (
                 <ChatMessage key={msg.id} message={msg} currentUser={user} />
             ))}
             <div ref={scrollDown}></div>
-        </main>
+        </div>
 
-        <form onSubmit={sendMessage}>
+        <form onSubmit={sendMessage} className='message-form'>
 
-            <input value={formValue} onChange={(e) => setFormValue(e.target.value)} />
-            <button type="submit"> Send Message </button>
-
+            <input 
+                type="text" 
+                value={formValue} 
+                onChange={(e) => setFormValue(e.target.value)} 
+                placeholder='Type your message...'/>
+            <button type="submit">Send</button>
 
         </form>
       </div>
