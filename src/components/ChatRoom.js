@@ -104,7 +104,8 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
             <DirectMessageSidebar 
                 user={user} 
                 setRecieverID={setRecieverID} 
-                firestore={firestore}/>
+                firestore={firestore}
+                recieverID={recieverID}/>
         </div>
         <div className='centered-div'>
             <div className='chatroom-container'>

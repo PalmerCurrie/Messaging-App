@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions as needed
 import "../styles/DirectMessage.css";
 
-function DirectMessage({ useruid, firestore }) {
+function DirectMessage({ useruid, firestore, handleDivClick, recieverID }) {
     const [userData, setUserData] = useState(null);
 
     useEffect(() => {
@@ -21,13 +21,19 @@ function DirectMessage({ useruid, firestore }) {
       fetchUserData();
     }, [useruid]);
 
+    const handleClick = () => {
+        handleDivClick(useruid);
+    }
+
     return (
-        <div className='direct-message-container'>
-            {userData && (
+        <div className={`direct-message-container ${useruid === recieverID ? 'selected' : ''}`} onClick={handleClick}>
+            {userData ? (
                 <>
                     <img src={userData.photoURL} alt="User Avatar" />
                     <p>{userData.customUserName}</p>
                 </>
+            ) : (
+                <p>Loading...</p>
             )}
         </div>
     );

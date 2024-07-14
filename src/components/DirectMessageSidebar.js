@@ -4,7 +4,7 @@ import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, getDocs} 
 import DirectMessage from "./DirectMessage.js";
 
 
-function DirectMessageSidebar( {user, setRecieverID, firestore} ) {
+function DirectMessageSidebar( {user, setRecieverID, firestore, recieverID} ) {
 
     // Need to make a users collection first
 
@@ -15,10 +15,13 @@ function DirectMessageSidebar( {user, setRecieverID, firestore} ) {
     
     const [inputValue, setInputValue] = useState("");
 
-    const handleChatPreviewClick = (e) => {
-      const divId = e.currentTarget.id;
-      console.log("Clicked on Div with ID: ", divId);
-      // setRecieverID(divId);
+    const handleChatPreviewClick = (id) => {
+      console.log("Clicked on Div with ID: ", id);
+      setRecieverID(id);
+    }
+
+    const handleGlobalClick = () => {
+      handleChatPreviewClick("global");
     }
 
     const [loading, setLoading] = useState(false);
@@ -101,12 +104,17 @@ function DirectMessageSidebar( {user, setRecieverID, firestore} ) {
   return (
     <div className='container'>
       <h1>Direct Messages</h1>
-      <div className="chat-preview" id="global" onClick={handleChatPreviewClick}>
+      <div className="chat-preview" id="global" onClick={handleGlobalClick}>
         <p>Global Chat</p>
       </div>
       <div className="direct-messages-container">
         {directMessages && directMessages.map(dm => (
-          <DirectMessage key={dm} useruid={dm} firestore={firestore}/>
+          <DirectMessage 
+            key={dm} 
+            useruid={dm} 
+            firestore={firestore} 
+            handleDivClick={handleChatPreviewClick}
+            recieverID={recieverID}/>
         ))}
       </div>
       <form className="add-user" onSubmit={handleAddFriend}>
