@@ -1,0 +1,61 @@
+/* DirectMessageSidebar.css */
+
+.container {
+    display: flex;
+    flex-direction: column;
+    /* border-right: 1px solid #ddd; */
+    margin-top: 0px;
+    padding: 20px;
+    height: 100%;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #333;
+  }
+  
+  .chat-preview {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .chat-preview:hover {
+    background-color: #e0e0e0;
+  }
+  
+  .direct-messages-container {
+    margin-top: 20px;
+    overflow-y: auto;
+    max-height: 60vh; /* Adjust according to your needs */
+  }
+  
+  .add-user {
+    margin-top: 20px;
+  }
+  
+  .add-user input {
+    width: calc(100% - 80px);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+  
+  .add-user button {
+    padding: 10px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-user button:hover {
+    background-color: #45a049;
+  }

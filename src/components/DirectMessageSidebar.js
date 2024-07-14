@@ -1,6 +1,6 @@
 import "../styles/DirectMessageSidebar.css";
 import { useEffect, useState } from "react";
-import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion, collection, query, where, getDocs} from "firebase/firestore";
 import DirectMessage from "./DirectMessage.js";
 
 
@@ -65,16 +65,27 @@ function DirectMessageSidebar( {user, setRecieverID, firestore} ) {
       // Add logic to find the user by email and update directMessages
       if (inputValue) {
         try {
-          const usersCollection = firestore.collection('users');
-          const querySnapshot = await usersCollection.where('email', '==', inputValue).get();
+
+          const usersCollection = collection(firestore, 'users'); // Accessing collection from Firestore instance
+          const querySnapshot = await getDocs(query(usersCollection, where('email', '==', inputValue)));
+
           if (!querySnapshot.empty) {
             const friendData = querySnapshot.docs[0].data();
             const friendId = querySnapshot.docs[0].id;
+
+          // Check if friendId is already in directMessages
+          if (directMessages.includes(friendId)) {
+            console.log('Friend is already added.');
+            setInputValue('');
+            return; // Exit function if friend is already added
+          }
+    
             // Update directMessages for the current user
             const userDocRef = doc(firestore, 'users', user.uid);
             await updateDoc(userDocRef, {
               directMessages: arrayUnion(friendId)
             });
+    
             // Update local state
             setDirectMessages(prevMessages => [...prevMessages, friendId]);
             setInputValue('');
@@ -88,14 +99,14 @@ function DirectMessageSidebar( {user, setRecieverID, firestore} ) {
     };
   
   return (
-    <div className='wrapper'>
+    <div className='container'>
       <h1>Direct Messages</h1>
       <div className="chat-preview" id="global" onClick={handleChatPreviewClick}>
         <p>Global Chat</p>
       </div>
       <div className="direct-messages-container">
         {directMessages && directMessages.map(dm => (
-          <DirectMessage key={dm} useruid={dm} user={user} userData={userData} />
+          <DirectMessage key={dm} useruid={dm} firestore={firestore}/>
         ))}
       </div>
       <form className="add-user" onSubmit={handleAddFriend}>

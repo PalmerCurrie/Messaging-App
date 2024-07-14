@@ -18,39 +18,37 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
 
   // Listen to data with a hook
   const [messages, error] = useCollectionData(q, { idField: 'id' });
-    // Returns an array of objects, where each object is the message in the database
-    // anytime data changes, react will re-render with the latest data   
 
-    const scrollDown = useRef(); // Scrolls down to bottom of messages each time message sent
+  const scrollDown = useRef(); // Scrolls down to bottom of messages each time message sent
 
-    const [formValue, setFormValue] = useState("");
+  const [formValue, setFormValue] = useState("");
 
 
-    // Fetch userData for customUserName
-    const [loading, setLoading] = useState(false);
-    const [userData, setUserData] = useState(null);
-    useEffect(() => {
-        const fetchUserData = async () => {
-          if (user) {
-            try {
-              const userDocRef = doc(firestore, 'users', user.uid);
-              const docSnap = await getDoc(userDocRef);
-              if (docSnap.exists()) {
-                setUserData(docSnap.data());
-              } else {
-                console.log('User document does not exist');
-              }
-            } catch (error) {
-              console.error('Error fetching user data:', error);
-            } finally {
-              setLoading(false);
-            }
+  // Fetch userData for customUserName
+  const [loading, setLoading] = useState(false);
+  const [userData, setUserData] = useState(null);
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (user) {
+        try {
+          const userDocRef = doc(firestore, 'users', user.uid);
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists()) {
+            setUserData(docSnap.data());
           } else {
-            setLoading(false); // Set loading to false even if there's no user
+            console.log('User document does not exist');
           }
-        };
-        fetchUserData();
-      }, [user]);
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setLoading(false); // Set loading to false even if there's no user
+      }
+    };
+    fetchUserData();
+  }, [user]);
 
     
 
@@ -133,6 +131,7 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
                 </form>
             </div>
         </div>
+        <div className='right-div'></div>
     </div>
     )
 }

@@ -95,7 +95,6 @@ function App() {
 
   return (
     <Router>
-    <div className="App">
       <Header />
       <Routes>
         <Route path="/profile" element={<UserProfile 
@@ -110,7 +109,6 @@ function App() {
                                           recieverID={recieverID} />
         } />
       </Routes>
-    </div>
   </Router>
   );
 }
