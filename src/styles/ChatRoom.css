@@ -1,13 +1,21 @@
 .wrapper {
     display: flex;
-    justify-content: center;
 }
+
+.left-div {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+
+}
+
 
 .chatroom-container {
     display: flex;
+    justify-content: center;
     flex-direction: column;
     height: 90vh; 
-    width: 40%;
+    width: 60%;
     overflow-y: auto; 
     overflow-x: hidden;
     position: relative;

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import SignIn from './components/SignIn.js';
 import SignOut from './components/SignOut.js';
@@ -13,6 +13,9 @@ import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
+
+import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import { useCollectionData } from 'react-firebase-hooks/firestore';
 
 
 
@@ -32,9 +35,49 @@ const auth = getAuth(app);
 const firestore = getFirestore(app);
 
 
+
 function App() {
 
   const [user] = useAuthState(auth);
+
+  
+  const [currentUser, setCurrentUser] = useState(null);
+
+  useEffect(() => {
+    const usersRef = collection(firestore, 'users');
+
+    const addUserToFirestore = async (userData) => {
+      try {
+        await addDoc(usersRef, {
+          uid: userData.uid,
+          email: userData.email,
+          displayName: userData.displayName,
+          photoURL: userData.photoURL,
+          createdAt: serverTimestamp(),
+        });
+        console.log('User added to Firestore with ID: ', userData.uid);
+      } catch (error) {
+        console.error('Error adding user to Firestore: ', error);
+      }
+    };
+
+    if (user) {
+      setCurrentUser(user);
+
+      // Check if user already exists in Firestore
+      const userQuery = query(usersRef, where('uid', '==', user.uid));
+      getDocs(userQuery).then((querySnapshot) => {
+        if (querySnapshot.empty) {
+          addUserToFirestore(user);
+        } else {
+          console.log('User already exists in Firestore');
+        }
+      }).catch((error) => {
+        console.error('Error checking user existence: ', error);
+      });
+    }
+  }, [user]);
+
 
   
 

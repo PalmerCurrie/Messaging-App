@@ -3,6 +3,7 @@ import { useRef, useState } from 'react';
 import { collection, query, orderBy, limit, serverTimestamp, addDoc  } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import "../styles/ChatRoom.css";
+import DirectMessageSidebar from './DirectMessageSidebar.js';
 
 
 function ChatRoom( {user, firestore } ) {
@@ -26,17 +27,16 @@ function ChatRoom( {user, firestore } ) {
     const sendMessage = async(e) => {
         e.preventDefault(); // Stop page form refreshing when form is submit
 
-        const { uid, photoURL } = user;
-
         // Create new document in 'messages' database, takes JavaScript object as argument
         if (formValue !== "") {
             try {
                 await addDoc(messagesRef, {
                     text: formValue,
                     createdAt: serverTimestamp(),
-                    uid,
-                    photoURL,
-                    displayName: user.displayName
+                    photoURL: user.photoURL,
+                    displayName: user.displayName,
+                    senderID: user.uid,
+                    recieverID: "global",
                 });
 
                 setFormValue('');
@@ -61,29 +61,34 @@ function ChatRoom( {user, firestore } ) {
 
     return (
     <div className='wrapper'>
-      <div className='chatroom-container'>
-        <div className='chatroom-header'>
-            <h2>Chat Room</h2>
-            {/* Add any additional elements for the header/bar here */}
+        <div className='left-div'>
+            <DirectMessageSidebar />
         </div>
-        <div className='messages'>
-            {messages && messages.map(msg => (
-                <ChatMessage key={msg.id} message={msg} currentUser={user} />
-            ))}
-            <div ref={scrollDown}></div>
+        <div className='centered-div'>
+            <div className='chatroom-container'>
+                <div className='chatroom-header'>
+                    <h2>Chat Room</h2>
+                    {/* Add any additional elements for the header/bar here */}
+                </div>
+                <div className='messages'>
+                    {messages && messages.map(msg => (
+                        <ChatMessage key={msg.id} message={msg} currentUser={user} />
+                    ))}
+                    <div ref={scrollDown}></div>
+                </div>
+
+                <form onSubmit={sendMessage} className='message-form'>
+
+                    <input 
+                        type="text" 
+                        value={formValue} 
+                        onChange={(e) => setFormValue(e.target.value)} 
+                        placeholder='Type your message...'/>
+                    <button type="submit">Send</button>
+
+                </form>
+            </div>
         </div>
-
-        <form onSubmit={sendMessage} className='message-form'>
-
-            <input 
-                type="text" 
-                value={formValue} 
-                onChange={(e) => setFormValue(e.target.value)} 
-                placeholder='Type your message...'/>
-            <button type="submit">Send</button>
-
-        </form>
-      </div>
     </div>
     )
 }
