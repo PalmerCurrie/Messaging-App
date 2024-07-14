@@ -53,7 +53,9 @@ function App() {
           photoURL: userData.photoURL,
           createdAt: serverTimestamp(),
           customUserName: user.displayName,
+          directMessages: [],
         })
+
         console.log('User added to Firestore with ID: ', userData.uid);
       } catch (error) {
         console.error('Error adding user to Firestore: ', error);
@@ -76,13 +78,37 @@ function App() {
     }
   }, [user]);
 
+
+  // For DirectMessaging and settingRecieverId
+  const [recieverID, setRecieverID] = useState("global");
+
+
+  useEffect(() => {
+    setRecieverID("global");
+  }, [])
+
+
+
+
+
+
+
   return (
     <Router>
     <div className="App">
       <Header />
       <Routes>
-        <Route path="/profile" element={<UserProfile user={user} auth={auth} firestore={firestore} />} />
-        <Route path="/message" element={<ChatRoom user={user} firestore={firestore} />} />
+        <Route path="/profile" element={<UserProfile 
+                                          user={user} 
+                                          auth={auth} 
+                                          firestore={firestore} />
+        } />
+        <Route path="/message" element={<ChatRoom 
+                                          user={user} 
+                                          firestore={firestore} 
+                                          setRecieverID={setRecieverID} 
+                                          recieverID={recieverID} />
+        } />
       </Routes>
     </div>
   </Router>

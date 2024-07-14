@@ -7,7 +7,7 @@ import "../styles/ChatRoom.css";
 import DirectMessageSidebar from './DirectMessageSidebar.js';
 
 
-function ChatRoom( {user, firestore } ) {
+function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
   // When user adds a new message to chat, it creates a document in the database collection
     
   // Reference the Firestore collection
@@ -75,7 +75,7 @@ function ChatRoom( {user, firestore } ) {
                     displayName,
                     customUserName: userData.customUserName,
                     senderID: user.uid,
-                    recieverID: "global",
+                    recieverID,
                 });
 
                 setFormValue('');
@@ -103,7 +103,10 @@ function ChatRoom( {user, firestore } ) {
     return (
     <div className='wrapper'>
         <div className='left-div'>
-            <DirectMessageSidebar />
+            <DirectMessageSidebar 
+                user={user} 
+                setRecieverID={setRecieverID} 
+                firestore={firestore}/>
         </div>
         <div className='centered-div'>
             <div className='chatroom-container'>

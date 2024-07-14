@@ -2,9 +2,7 @@ import "../styles/UserProfile.css"
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import { useEffect, useState } from "react";
-import { updateProfile } from "firebase/auth";
 import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { useFetcher } from "react-router-dom";
 
 function UserProfile( {user, auth, firestore} ) {
     const [newName, setNewName] = useState("");
