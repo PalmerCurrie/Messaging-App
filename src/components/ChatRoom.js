@@ -35,7 +35,8 @@ function ChatRoom( {user, firestore } ) {
                     text: formValue,
                     createdAt: serverTimestamp(),
                     uid,
-                    photoURL
+                    photoURL,
+                    displayName: user.displayName
                 });
 
                 setFormValue('');
