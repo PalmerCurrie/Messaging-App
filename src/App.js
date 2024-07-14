@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import SignIn from './components/SignIn.js';
 import SignOut from './components/SignOut.js';
 import ChatRoom from "./components/ChatRoom.js";
-import Header from './components/Header.jsx';
+import Header from './components/Header.js';
 import UserProfile from './components/UserProfile.js';
 
 import { initializeApp } from 'firebase/app';
@@ -13,6 +13,7 @@ import { getAuth } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
+
 
 
 
@@ -35,12 +36,14 @@ function App() {
 
   const [user] = useAuthState(auth);
 
+  
+
   return (
     <Router>
     <div className="App">
       <Header />
       <Routes>
-        <Route path="/profile" element={<UserProfile user={user} />} />
+        <Route path="/profile" element={<UserProfile user={user} auth={auth} firestore={firestore} />} />
         <Route path="/message" element={<ChatRoom user={user} firestore={firestore} />} />
       </Routes>
     </div>
