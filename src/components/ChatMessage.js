@@ -2,9 +2,8 @@ import "../styles/ChatMessage.css"
 
 function ChatMessage({ key, message, currentUser }) {
 
-    const { uid, text, photoURL, createdAt, displayName } = message;
+    const { uid, text, photoURL, createdAt, displayName} = message;
 
-    
     if (!message || !message.createdAt) {
         return null; // Return null or handle the case where message or createdAt is missing
     }

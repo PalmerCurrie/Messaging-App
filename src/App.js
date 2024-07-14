@@ -17,6 +17,8 @@ import { BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
 import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 
+import { doc, setDoc } from "firebase/firestore";
+
 
 
 
@@ -40,7 +42,7 @@ function App() {
 
   const [user] = useAuthState(auth);
 
-  
+
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -48,13 +50,15 @@ function App() {
 
     const addUserToFirestore = async (userData) => {
       try {
-        await addDoc(usersRef, {
+        const userRef = doc(firestore, 'users', user.uid);
+        await setDoc(userRef, {
           uid: userData.uid,
           email: userData.email,
           displayName: userData.displayName,
           photoURL: userData.photoURL,
           createdAt: serverTimestamp(),
-        });
+          customUserName: user.displayName,
+        })
         console.log('User added to Firestore with ID: ', userData.uid);
       } catch (error) {
         console.error('Error adding user to Firestore: ', error);

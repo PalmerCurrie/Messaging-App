@@ -27,14 +27,17 @@ function ChatRoom( {user, firestore } ) {
     const sendMessage = async(e) => {
         e.preventDefault(); // Stop page form refreshing when form is submit
 
+        const {uid, photoURL, displayName} = user
+
         // Create new document in 'messages' database, takes JavaScript object as argument
         if (formValue !== "") {
             try {
                 await addDoc(messagesRef, {
                     text: formValue,
                     createdAt: serverTimestamp(),
-                    photoURL: user.photoURL,
-                    displayName: user.displayName,
+                    uid,
+                    photoURL,
+                    displayName,
                     senderID: user.uid,
                     recieverID: "global",
                 });
