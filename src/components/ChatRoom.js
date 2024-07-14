@@ -59,6 +59,7 @@ function ChatRoom( {user, firestore } ) {
 
 
     return (
+    <div className='wrapper'>
       <div className='chatroom-container'>
         <div className='chatroom-header'>
             <h2>Chat Room</h2>
@@ -82,6 +83,7 @@ function ChatRoom( {user, firestore } ) {
 
         </form>
       </div>
+    </div>
     )
 }
 

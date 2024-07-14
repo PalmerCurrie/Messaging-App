@@ -1,12 +1,18 @@
+.wrapper {
+    display: flex;
+    justify-content: center;
+}
+
 .chatroom-container {
     display: flex;
     flex-direction: column;
     height: 90vh; 
     width: 40%;
     overflow-y: auto; 
-    margin-top: 20px;
     overflow-x: hidden;
-    position: relative; 
+    position: relative;
+    scrollbar-width: thin; 
+    scrollbar-color: #ccc #f0f0f0;
   }
 
 
@@ -16,10 +22,14 @@
     color: white;
     padding: 10px;
     text-align: center;
-    position: sticky;
+    position: sticky; 
     top: 0;
     z-index: 1;
     border-bottom: 1px solid #006bdd 
+  }
+
+  .chatroom-header h2 {
+    margin-right: 15px;
   }
 
   .messages {
@@ -27,6 +37,20 @@
     flex-direction: column;
     flex: 1; /* Messages div takes up remaining space allocated for it in chatroom-container*/ 
     margin-top: 10px; 
+  }
+  
+  /* Define scrollbar styles */
+  .chatroom-container::-webkit-scrollbar {
+    width: 8px; 
+  }
+  
+  .chatroom-container::-webkit-scrollbar-track {
+    background: #f0f0f0; 
+  }
+  
+  .chatroom-container::-webkit-scrollbar-thumb {
+    background-color: #ccc; 
+    border-radius: 4px;
   }
   
 
