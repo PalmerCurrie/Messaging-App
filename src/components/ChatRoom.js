@@ -1,7 +1,8 @@
 import ChatMessage from './ChatMessage.js'
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, serverTimestamp, addDoc  } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { doc, updateDoc, getDoc } from "firebase/firestore";
 import "../styles/ChatRoom.css";
 import DirectMessageSidebar from './DirectMessageSidebar.js';
 
@@ -16,21 +17,55 @@ function ChatRoom( {user, firestore } ) {
   const q = query(messagesRef, orderBy('createdAt'), limit(25));
 
   // Listen to data with a hook
-  const [messages, loading, error] = useCollectionData(q, { idField: 'id' });
+  const [messages, error] = useCollectionData(q, { idField: 'id' });
     // Returns an array of objects, where each object is the message in the database
     // anytime data changes, react will re-render with the latest data   
 
-    const scrollDown = useRef();
+    const scrollDown = useRef(); // Scrolls down to bottom of messages each time message sent
 
     const [formValue, setFormValue] = useState("");
+
+
+    // Fetch userData for customUserName
+    const [loading, setLoading] = useState(false);
+    const [userData, setUserData] = useState(null);
+    useEffect(() => {
+        const fetchUserData = async () => {
+          if (user) {
+            try {
+              const userDocRef = doc(firestore, 'users', user.uid);
+              const docSnap = await getDoc(userDocRef);
+              if (docSnap.exists()) {
+                setUserData(docSnap.data());
+              } else {
+                console.log('User document does not exist');
+              }
+            } catch (error) {
+              console.error('Error fetching user data:', error);
+            } finally {
+              setLoading(false);
+            }
+          } else {
+            setLoading(false); // Set loading to false even if there's no user
+          }
+        };
+        fetchUserData();
+      }, [user]);
+
+    
+
+
+
 
     const sendMessage = async(e) => {
         e.preventDefault(); // Stop page form refreshing when form is submit
 
         const {uid, photoURL, displayName} = user
 
+
         // Create new document in 'messages' database, takes JavaScript object as argument
         if (formValue !== "") {
+            console.log(userData.customUserName);
             try {
                 await addDoc(messagesRef, {
                     text: formValue,
@@ -38,6 +73,7 @@ function ChatRoom( {user, firestore } ) {
                     uid,
                     photoURL,
                     displayName,
+                    customUserName: userData.customUserName,
                     senderID: user.uid,
                     recieverID: "global",
                 });
@@ -51,15 +87,17 @@ function ChatRoom( {user, firestore } ) {
         }
     } 
 
-    if (loading) {
+    if (loading || error || !userData) {
         return <p>Loading messages...</p>;
     }
-    
-    if (error) {
-        console.error('Error fetching messages:', error);
-        return <p>Error loading messages.</p>;
-    }
 
+    if (!user) {
+        return (
+            <div>
+                <p>Please Sign In in the Profile Section</p>
+            </div>
+        )
+    }
 
 
     return (

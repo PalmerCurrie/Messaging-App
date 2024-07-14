@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './App.css';
 import SignIn from './components/SignIn.js';
 import SignOut from './components/SignOut.js';
-import ChatRoom from "./components/ChatRoom.js";
+import ChatRoom from './components/ChatRoom.js';
 import Header from './components/Header.js';
 import UserProfile from './components/UserProfile.js';
 
@@ -14,12 +14,9 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
 
-import { collection, addDoc, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
+import { collection, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
 
-import { doc, setDoc } from "firebase/firestore";
-
-
+import { doc, setDoc} from "firebase/firestore";
 
 
 const firebaseConfig = {
@@ -42,12 +39,10 @@ function App() {
 
   const [user] = useAuthState(auth);
 
-
-  const [currentUser, setCurrentUser] = useState(null);
-
   useEffect(() => {
     const usersRef = collection(firestore, 'users');
 
+    // Add User to Firestore Database if user does not exist already
     const addUserToFirestore = async (userData) => {
       try {
         const userRef = doc(firestore, 'users', user.uid);
@@ -66,7 +61,6 @@ function App() {
     };
 
     if (user) {
-      setCurrentUser(user);
 
       // Check if user already exists in Firestore
       const userQuery = query(usersRef, where('uid', '==', user.uid));
@@ -82,9 +76,6 @@ function App() {
     }
   }, [user]);
 
-
-  
-
   return (
     <Router>
     <div className="App">
@@ -97,7 +88,6 @@ function App() {
   </Router>
   );
 }
-
 
 
 export default App;

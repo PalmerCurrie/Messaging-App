@@ -2,7 +2,7 @@ import "../styles/ChatMessage.css"
 
 function ChatMessage({ key, message, currentUser }) {
 
-    const { uid, text, photoURL, createdAt, displayName} = message;
+    const { uid, text, photoURL, createdAt, displayName, customUserName} = message;
 
     if (!message || !message.createdAt) {
         return null; // Return null or handle the case where message or createdAt is missing
@@ -39,7 +39,7 @@ function ChatMessage({ key, message, currentUser }) {
                 )}
                 <div className="message-text">
                 {messageClass === 'received' && (
-                    <p className="username">{displayName}</p>
+                    <p className="username">{customUserName || displayName}</p>
                 )}
                     <p>{text}</p>
                     <p className="timestamp">{formattedDate}</p>

@@ -53,10 +53,6 @@ function UserProfile( {user, auth, firestore} ) {
         }
     }
 
-    // Ensure userData is fetched before rendering
-    if (!userData) {
-        return <div>Loading...</div>;
-      }
 
     if (!user) {
         return (
@@ -75,6 +71,12 @@ function UserProfile( {user, auth, firestore} ) {
             </div>
         )
     }
+
+    // Ensure userData is fetched before rendering
+    if (!userData) {
+      return <div>Loading...</div>;
+    }
+  
 
     return (
         <div className="profile-page">
