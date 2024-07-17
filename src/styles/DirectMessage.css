@@ -1,6 +1,7 @@
 .direct-message-container {
-    display: flex;
-    align-items: center;
+    display: grid;
+    grid-template-columns: auto 1fr; /* Adjusted to use 'auto' for the logo and '1fr' for the text */
+    align-items: center; /* Center align items vertically */
     padding: 10px;
     background-color: #fff;
     border: 1px solid #ddd;
@@ -8,7 +9,6 @@
     margin-bottom: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
-    flex-direction: column;
 }
 
 .direct-message-container:hover {
@@ -22,9 +22,9 @@
     margin-right: 10px;
 }
 
-.direct-message-container p {
+.direct-message-container h1 {
     margin: 0;
-    font-size: 1rem;
+    margin-left: 5px;
     color: #333;
 }
 

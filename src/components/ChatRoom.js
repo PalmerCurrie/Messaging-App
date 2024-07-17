@@ -131,7 +131,7 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
         <div className='centered-div'>
             <div className='chatroom-container'>
                 <div className='chatroom-header'>
-                    <h2>{chatName}</h2>
+                <h2>{chatName === "global" ? "Global" : chatName}</h2>
                     {/* Add any additional elements for the header/bar here */}
                 </div>
                 <div className='messages'>

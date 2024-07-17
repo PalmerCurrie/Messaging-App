@@ -20,9 +20,9 @@
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 10px;
-    margin-bottom: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
+    text-align: center;
   }
   
   .chat-preview:hover {
@@ -40,7 +40,6 @@
   }
   
   .add-user input {
-    width: calc(100% - 80px);
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 5px;
@@ -58,4 +57,5 @@
   
   .add-user button:hover {
     background-color: #45a049;
+    transition: background-color 0.3s;
   }

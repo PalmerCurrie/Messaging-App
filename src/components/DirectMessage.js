@@ -29,8 +29,12 @@ function DirectMessage({ useruid, firestore, handleDivClick, recieverID }) {
         <div className={`direct-message-container ${useruid === recieverID ? 'selected' : ''}`} onClick={handleClick}>
             {userData ? (
                 <>
+                <div >
                     <img src={userData.photoURL} alt="User Avatar" />
-                    <p>{userData.customUserName}</p>
+                </div>
+                    <div>
+                      <h1>{userData.customUserName}</h1>
+                    </div>
                 </>
             ) : (
                 <p>Loading...</p>

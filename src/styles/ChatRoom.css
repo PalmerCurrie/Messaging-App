@@ -42,10 +42,13 @@
   top: 0;
   z-index: 1;
   border-bottom: 1px solid #006bdd;
+  font-size: 24px;
 }
 
 .chatroom-header h2 {
   margin-right: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 
 .messages {

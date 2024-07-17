@@ -97,7 +97,7 @@ function DirectMessageSidebar( {user, setRecieverID, firestore, recieverID} ) {
     <div className='container'>
       <h1>Direct Messages</h1>
       <div className="chat-preview" id="global" onClick={handleGlobalClick}>
-        <p>Global Chat</p>
+        <h1>Global Chat</h1>
       </div>
       <div className="direct-messages-container">
         {directMessages && directMessages.map(dm => (
