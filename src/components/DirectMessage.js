@@ -37,7 +37,14 @@ function DirectMessage({ useruid, firestore, handleDivClick, recieverID }) {
                     </div>
                 </>
             ) : (
-                <p>Loading...</p>
+              <>
+              <div >
+                  <div className="img-placeholder"></div>
+              </div>
+                  <div>
+                    <div className="text-placeholder"></div>
+                  </div>
+              </>
             )}
         </div>
     );

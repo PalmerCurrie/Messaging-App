@@ -28,8 +28,29 @@
     color: #333;
 }
 
-/* Apply styles for selected message */
 .direct-message-container.selected {
-    background-color: #007bff; /* Example background color for selected message */
-    color: #fff; /* Example text color for selected message */
+    background-color: #007bff;
+    color: #fff; 
+}
+
+.direct-message-container.selected h1 {
+    color: #fff; 
+}
+
+.img-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    background-color: #ccc;
+}
+
+.text-placeholder {
+    margin: 0;
+    margin-left: 5px;
+    width: 75%;
+    height: 30px;
+    border-radius: 10px;
+    margin-right: 10px;
+    background-color: #ccc;
 }

@@ -34,6 +34,21 @@
     transition: background-color 0.3s;
     text-align: center;
   }
+
+    
+  .chat-preview-selected {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    text-align: center;
+    background-color: #007bff;
+  }
+
+  .chat-preview-selected h1 { 
+    color: white;
+  }
   
   .chat-preview:hover {
     background-color: #e0e0e0;

@@ -72,7 +72,25 @@ function UserProfile( {user, auth, firestore} ) {
 
     // Ensure userData is fetched before rendering
     if (!userData) {
-      return <div>Loading...</div>;
+      return (
+        <div className="profile-page">
+          <div className="profile-container">
+            <div className="img-container">
+              <div className="placeholder-img"></div>
+            </div>
+            <div className="text-container">
+                <div className="text-container-placeholder"> </div>
+                <div className="text-container-placeholder"> </div>
+
+
+            </div>
+            <div className="button-container">
+              <div className="button-placeholder"></div>
+              <div className="button-placeholder"></div>
+            </div>
+          </div>
+        </div>
+      )
     }
   
 

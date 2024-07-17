@@ -92,13 +92,15 @@ function DirectMessageSidebar( {user, setRecieverID, firestore, recieverID} ) {
         }
       }
     };
+
+    const chatPreviewClass = recieverID === "global" ? "chat-preview-selected" : "chat-preview";
   
   return (
     <div className='container'>
       <div className="header">
         <h1>Direct Messages</h1>
       </div>
-      <div className="chat-preview" id="global" onClick={handleGlobalClick}>
+      <div className={chatPreviewClass} id="global" onClick={handleGlobalClick}>
         <h1>Global Chat</h1>
       </div>
       <div className="direct-messages-container">

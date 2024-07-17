@@ -107,7 +107,24 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
     } 
 
     if (loading || error || !userData) {
-        return <p>Loading messages...</p>;
+        return (
+        <div className="wrapper">
+          <div className="left-div">
+
+          </div>
+          <div className="centered-div">
+            <div className='chatroom-container'>
+                <div className='chatroom-header-loading'>
+                  <h2> Loading... </h2>
+
+              </div>
+            </div>
+          </div>
+          <div className="right-div">
+
+          </div>
+        </div>
+        )
     }
 
     if (!user) {

@@ -43,9 +43,28 @@
   z-index: 1;
   border-bottom: 1px solid #006bdd;
   font-size: 24px;
-}
+} 
 
 .chatroom-header h2 {
+  margin-right: 15px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.chatroom-header-loading {
+  width: 100%;
+  background-color: #ccc;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid #cccccce5;
+  font-size: 24px;
+}
+
+.chatroom-header-loading h2 {
   margin-right: 15px;
   margin-top: 5px;
   margin-bottom: 5px;
