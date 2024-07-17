@@ -8,6 +8,16 @@
     padding: 20px;
     height: 100%;
   }
+
+  .header {
+    text-align: center;
+  }
+
+  .header h1 {
+    margin: 0px;
+    margin-left: 20px;
+    text-align: center;
+  }
   
   h1 {
     font-size: 1.5rem;

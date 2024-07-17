@@ -3,8 +3,8 @@
     justify-content: flex-start;
     align-items: flex-start;
     margin: 5px;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 15px;
+    border-radius: 25px;
     max-width: 70%;
   }
   
@@ -28,6 +28,10 @@
   .message-text {
     max-width: 100%;
     text-align: left;
+  }
+
+  .message-text p {
+    margin: 0px;
   }
   
   .avatar {
