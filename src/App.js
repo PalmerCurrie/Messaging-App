@@ -14,7 +14,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 
 import { BrowserRouter as Router, Routes, Route,} from 'react-router-dom';
 
-import { collection, serverTimestamp, query, where, getDocs } from 'firebase/firestore';
+import { collection, serverTimestamp, query, where, getDocs, getDoc } from 'firebase/firestore';
 
 import { doc, setDoc} from "firebase/firestore";
 
@@ -38,6 +38,7 @@ const firestore = getFirestore(app);
 function App() {
 
   const [user] = useAuthState(auth);
+  const [userData, setUserData] = useState();
 
   useEffect(() => {
     const usersRef = collection(firestore, 'users');
@@ -45,6 +46,7 @@ function App() {
     // Add User to Firestore Database if user does not exist already
     const addUserToFirestore = async (userData) => {
       try {
+        setUserData(userData);
         const userRef = doc(firestore, 'users', user.uid);
         await setDoc(userRef, {
           uid: userData.uid,
@@ -95,7 +97,7 @@ function App() {
 
   return (
     <Router>
-      <Header />
+      <Header user={user} auth={auth} firestore={firestore} />
       <Routes>
         <Route path="/profile" element={<UserProfile 
                                           user={user} 
