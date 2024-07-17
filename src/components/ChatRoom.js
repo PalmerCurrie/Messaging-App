@@ -3,6 +3,7 @@ import { useRef, useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, serverTimestamp, addDoc  } from 'firebase/firestore';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { v4 as uuidv4 } from 'uuid';
 import "../styles/ChatRoom.css";
 import DirectMessageSidebar from './DirectMessageSidebar.js';
 
@@ -82,12 +83,14 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
         e.preventDefault(); // Stop page form refreshing when form is submit
 
         const {uid, photoURL, displayName} = user
+        const uniqueId = uuidv4(); // Generate a unique ID for the message
 
 
         // Create new document in 'messages' database, takes JavaScript object as argument
         if (formValue !== "") {
             try {
                 await addDoc(messagesRef, {
+                    id: uniqueId, // Add the unique ID to the message data
                     text: formValue,
                     createdAt: serverTimestamp(),
                     photoURL,
@@ -157,14 +160,24 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
                             // Display all messages when recieverID is 'global'
                             const globalCase = msg.recieverID === "global";
                             if (globalCase) {
-                                return <ChatMessage key={msg.id} message={msg} currentUser={user} isGlobal={true} />;
+                                return <ChatMessage 
+                                  key={msg.id} 
+                                  message={msg} 
+                                  sender={msg.senderID == user.uid} 
+                                  currentUser={user} 
+                                  isGlobal={true} />;
                             }
                         } else {
                             // Check if the message matches either of the direct messaging cases
                             const case1 = msg.senderID === user.uid && msg.recieverID === recieverID;
                             const case2 = msg.senderID === recieverID && msg.recieverID === user.uid;
                             if (case1 || case2) {
-                                return <ChatMessage key={msg.id} message={msg} currentUser={user} sender={msg.senderID == user.uid} isGlobal={false} />;
+                                return <ChatMessage 
+                                  key={msg.id} 
+                                  message={msg} 
+                                  currentUser={user} 
+                                  sender={msg.senderID == user.uid} 
+                                  isGlobal={false} />;
                             } else {
                                 return null;
                             }
