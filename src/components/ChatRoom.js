@@ -7,7 +7,7 @@ import "../styles/ChatRoom.css";
 import DirectMessageSidebar from './DirectMessageSidebar.js';
 
 
-function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
+function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
   // When user adds a new message to chat, it creates a document in the database collection
     
   // Reference the Firestore collection
@@ -24,9 +24,30 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
   const [formValue, setFormValue] = useState("");
 
 
-  // Fetch userData for customUserName
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
+
+  const [chatName, setChatName] = useState("");
+  const fetchChatName = async () => {
+    if (recieverID == "global") {
+        setChatName("global");
+        return;
+    } 
+    if (user) {
+        try {
+          const userDocRef = doc(firestore, 'users', recieverID);
+          const docSnap = await getDoc(userDocRef);
+          if (docSnap.exists()) {
+            setChatName(docSnap.data().customUserName);
+          } else {
+            console.log('User document does not exist');
+          }
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        } 
+      } 
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
@@ -44,11 +65,13 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
           setLoading(false);
         }
       } else {
-        setLoading(false); // Set loading to false even if there's no user
+        setLoading(false);
       }
     };
     fetchUserData();
-  }, [user]);
+    fetchChatName();
+  }, [user, recieverID]);
+
 
     
 
@@ -63,12 +86,10 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
 
         // Create new document in 'messages' database, takes JavaScript object as argument
         if (formValue !== "") {
-            console.log(userData.customUserName);
             try {
                 await addDoc(messagesRef, {
                     text: formValue,
                     createdAt: serverTimestamp(),
-                    uid,
                     photoURL,
                     displayName,
                     customUserName: userData.customUserName,
@@ -110,13 +131,28 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID} ) {
         <div className='centered-div'>
             <div className='chatroom-container'>
                 <div className='chatroom-header'>
-                    <h2>Chat Room</h2>
+                    <h2>{chatName}</h2>
                     {/* Add any additional elements for the header/bar here */}
                 </div>
                 <div className='messages'>
-                    {messages && messages.map(msg => (
-                        <ChatMessage key={msg.id} message={msg} currentUser={user} />
-                    ))}
+                    {messages && messages.map(msg => {
+                        if (recieverID === 'global') {
+                            // Display all messages when recieverID is 'global'
+                            const globalCase = msg.recieverID === "global";
+                            if (globalCase) {
+                                return <ChatMessage key={msg.id} message={msg} currentUser={user} isGlobal={true} />;
+                            }
+                        } else {
+                            // Check if the message matches either of the direct messaging cases
+                            const case1 = msg.senderID === user.uid && msg.recieverID === recieverID;
+                            const case2 = msg.senderID === recieverID && msg.recieverID === user.uid;
+                            if (case1 || case2) {
+                                return <ChatMessage key={msg.id} message={msg} currentUser={user} sender={msg.senderID == user.uid} isGlobal={false} />;
+                            } else {
+                                return null;
+                            }
+                        }
+                    })}
                     <div ref={scrollDown}></div>
                 </div>
 

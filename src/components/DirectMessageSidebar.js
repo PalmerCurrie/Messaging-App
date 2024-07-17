@@ -5,18 +5,11 @@ import DirectMessage from "./DirectMessage.js";
 
 
 function DirectMessageSidebar( {user, setRecieverID, firestore, recieverID} ) {
-
-    // Need to make a users collection first
-
-    // useState of recieverId that is set to "global" on default
-    // when i click on a user in my DirectMessages the onclick of the div
-    // sets the recieverID to be that users ID.
-    // I have a add dm user or friend form that adds another user to the DM list
     
     const [inputValue, setInputValue] = useState("");
 
     const handleChatPreviewClick = (id) => {
-      console.log("Clicked on Div with ID: ", id);
+      // console.log("Clicked on Div with ID: ", id);
       setRecieverID(id);
     }
 
@@ -73,14 +66,13 @@ function DirectMessageSidebar( {user, setRecieverID, firestore, recieverID} ) {
           const querySnapshot = await getDocs(query(usersCollection, where('email', '==', inputValue)));
 
           if (!querySnapshot.empty) {
-            const friendData = querySnapshot.docs[0].data();
             const friendId = querySnapshot.docs[0].id;
 
           // Check if friendId is already in directMessages
           if (directMessages.includes(friendId)) {
             console.log('Friend is already added.');
             setInputValue('');
-            return; // Exit function if friend is already added
+            return; 
           }
     
             // Update directMessages for the current user

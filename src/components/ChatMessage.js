@@ -1,6 +1,6 @@
 import "../styles/ChatMessage.css"
 
-function ChatMessage({ key, message, currentUser }) {
+function ChatMessage({ key, message, currentUser, sender, isGlobal }) {
 
     const { uid, text, photoURL, createdAt, displayName, customUserName} = message;
 
@@ -29,7 +29,12 @@ function ChatMessage({ key, message, currentUser }) {
     const formattedDate = formatDate(date);
 
     // Determine the message class based on sender
-    const messageClass = uid === currentUser.uid ? 'sent' : 'received';
+    let messageClass = false;
+    if (isGlobal) {
+        messageClass = message.senderID === currentUser.uid ? 'sent' : 'received';
+    } else {
+        messageClass = sender ? 'sent' : 'received';
+    }
 
     return (
         <div className={`message ${messageClass}`} key={key}>
