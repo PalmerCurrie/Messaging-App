@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import ChatMessage from "./ChatMessage.js";
 import DirectMessageSidebar from "./DirectMessageSidebar.js";
 import { useRef, useState, useEffect } from "react";
@@ -35,7 +36,7 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
 
   const [chatName, setChatName] = useState("");
   const fetchChatName = async () => {
-    if (recieverID == "global") {
+    if (recieverID === "global") {
       setChatName("global");
       return;
     }
@@ -81,7 +82,7 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
   const sendMessage = async (e) => {
     e.preventDefault(); // Stop page form refreshing when form is submit
 
-    const { uid, photoURL, displayName } = user;
+    const { photoURL, displayName } = user;
     const uniqueId = uuidv4(); // Generate a unique ID for the message
 
     // Create new document in 'messages' database, takes JavaScript object as argument
@@ -183,36 +184,39 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
           </div>
           <div className="messages">
             {messages &&
-              messages.slice().reverse().map((msg) => {
-                if (recieverID === "global" && msg.recieverID === "global") {
-                  return (
-                    <ChatMessage
-                      key={msg.id}
-                      message={msg}
-                      sender={msg.senderID === user.uid}
-                      currentUser={user}
-                      isGlobal={true}
-                      handleDeleteMessage={handleDeleteMessage}
-                    />
-                  );
-                } else if (
-                  (msg.senderID === user.uid &&
-                    msg.recieverID === recieverID) ||
-                  (msg.senderID === recieverID && msg.recieverID === user.uid)
-                ) {
-                  return (
-                    <ChatMessage
-                      key={msg.id}
-                      message={msg}
-                      currentUser={user}
-                      sender={msg.senderID === user.uid}
-                      isGlobal={false}
-                      handleDeleteMessage={handleDeleteMessage}
-                    />
-                  );
-                }
-                return null;
-              })}
+              messages
+                .slice()
+                .reverse()
+                .map((msg) => {
+                  if (recieverID === "global" && msg.recieverID === "global") {
+                    return (
+                      <ChatMessage
+                        key={msg.id}
+                        message={msg}
+                        sender={msg.senderID === user.uid}
+                        currentUser={user}
+                        isGlobal={true}
+                        handleDeleteMessage={handleDeleteMessage}
+                      />
+                    );
+                  } else if (
+                    (msg.senderID === user.uid &&
+                      msg.recieverID === recieverID) ||
+                    (msg.senderID === recieverID && msg.recieverID === user.uid)
+                  ) {
+                    return (
+                      <ChatMessage
+                        key={msg.id}
+                        message={msg}
+                        currentUser={user}
+                        sender={msg.senderID === user.uid}
+                        isGlobal={false}
+                        handleDeleteMessage={handleDeleteMessage}
+                      />
+                    );
+                  }
+                  return null;
+                })}
           </div>
 
           <form onSubmit={sendMessage} className="message-form">

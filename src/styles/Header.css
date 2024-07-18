@@ -79,14 +79,8 @@
   background-color: #0056b3;
 }
 
-.header-profile {
-  display: flex;
-  justify-content: end;
-  width: 150px;
-  height: 75px;
-}
-
 .header-profile-container {
+  padding: 10px;
   width: 100%;
   display: flex;
   align-items: center;
