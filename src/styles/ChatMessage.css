@@ -91,3 +91,12 @@
 .popup-menu-item:hover {
   background-color: #f5f5f5;
 }
+
+
+.message.sent .popup-menu {
+  display: none;
+}
+
+.message.sent:hover .popup-menu {
+  display: block;
+}

@@ -19,21 +19,17 @@ import { v4 as uuidv4 } from "uuid";
 import "../styles/ChatRoom.css";
 
 function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
-  // When user adds a new message to chat, it creates a document in the database collection
-
   // Reference the Firestore collection
   const messagesRef = collection(firestore, "messages");
 
   // Query documents in the collection
-  const q = query(messagesRef, orderBy("createdAt"), limit(25));
+  const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
 
   // Listen to data with a hook
   const [messages, error] = useCollectionData(q, { idField: "id" });
 
-  const scrollDown = useRef(); // Scrolls down to bottom of messages each time message sent
-
+  const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
   const [formValue, setFormValue] = useState("");
-
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
 
@@ -103,12 +99,20 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
         });
 
         setFormValue("");
-
-        scrollDown.current.scrollIntoView({ behavior: "smooth" });
+        scrollToBottom();
       } catch (error) {
         console.error("Error adding message: ", error);
       }
     }
+  };
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      if (messagesContainerRef.current) {
+        messagesContainerRef.current.scrollTop =
+          messagesContainerRef.current.scrollHeight;
+      }
+    }, 100);
   };
 
   // Handling deleting a message
@@ -172,52 +176,43 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
         />
       </div>
       <div className="centered-div">
-        <div className="chatroom-container">
+        <div className="chatroom-container" ref={messagesContainerRef}>
           <div className="chatroom-header">
             <h2>{chatName === "global" ? "Global" : chatName}</h2>
             {/* Add any additional elements for the header/bar here */}
           </div>
           <div className="messages">
             {messages &&
-              messages.map((msg) => {
-                if (recieverID === "global") {
-                  // Display all messages when recieverID is 'global'
-                  const globalCase = msg.recieverID === "global";
-                  if (globalCase) {
-                    return (
-                      <ChatMessage
-                        key={msg.id}
-                        message={msg}
-                        sender={msg.senderID == user.uid}
-                        currentUser={user}
-                        isGlobal={true}
-                        handleDeleteMessage={handleDeleteMessage}
-                      />
-                    );
-                  }
-                } else {
-                  // Check if the message matches either of the direct messaging cases
-                  const case1 =
-                    msg.senderID === user.uid && msg.recieverID === recieverID;
-                  const case2 =
-                    msg.senderID === recieverID && msg.recieverID === user.uid;
-                  if (case1 || case2) {
-                    return (
-                      <ChatMessage
-                        key={msg.id}
-                        message={msg}
-                        currentUser={user}
-                        sender={msg.senderID == user.uid}
-                        isGlobal={false}
-                        handleDeleteMessage={handleDeleteMessage}
-                      />
-                    );
-                  } else {
-                    return null;
-                  }
+              messages.slice().reverse().map((msg) => {
+                if (recieverID === "global" && msg.recieverID === "global") {
+                  return (
+                    <ChatMessage
+                      key={msg.id}
+                      message={msg}
+                      sender={msg.senderID === user.uid}
+                      currentUser={user}
+                      isGlobal={true}
+                      handleDeleteMessage={handleDeleteMessage}
+                    />
+                  );
+                } else if (
+                  (msg.senderID === user.uid &&
+                    msg.recieverID === recieverID) ||
+                  (msg.senderID === recieverID && msg.recieverID === user.uid)
+                ) {
+                  return (
+                    <ChatMessage
+                      key={msg.id}
+                      message={msg}
+                      currentUser={user}
+                      sender={msg.senderID === user.uid}
+                      isGlobal={false}
+                      handleDeleteMessage={handleDeleteMessage}
+                    />
+                  );
                 }
+                return null;
               })}
-            <div ref={scrollDown}></div>
           </div>
 
           <form onSubmit={sendMessage} className="message-form">
