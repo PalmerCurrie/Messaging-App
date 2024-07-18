@@ -1,17 +1,12 @@
-import {signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { signInWithPopup, GoogleAuthProvider } from "firebase/auth";
 
-function SignIn( {auth, firestore} ) {
-    const signInWithGoogle = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithPopup(auth, provider);
-    };
+function SignIn({ auth, firestore }) {
+  const signInWithGoogle = () => {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider);
+  };
 
-
-  
-    return (
-        <button onClick={signInWithGoogle}>Sign in with Google</button>
-    )
+  return <button onClick={signInWithGoogle}>Sign in with Google</button>;
 }
-  
 
 export default SignIn;

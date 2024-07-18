@@ -1,8 +1,8 @@
-import { signOut } from 'firebase/auth';
+import { signOut } from "firebase/auth";
 
 function SignOut({ auth }) {
-  return auth.currentUser && (
-    <button onClick={() => signOut(auth)}>Sign Out</button>
+  return (
+    auth.currentUser && <button onClick={() => signOut(auth)}>Sign Out</button>
   );
 }
 

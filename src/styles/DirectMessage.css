@@ -1,56 +1,56 @@
 .direct-message-container {
-    display: grid;
-    grid-template-columns: auto 1fr; /* Adjusted to use 'auto' for the logo and '1fr' for the text */
-    align-items: center; /* Center align items vertically */
-    padding: 10px;
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-bottom: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  display: grid;
+  grid-template-columns: auto 1fr; /* Adjusted to use 'auto' for the logo and '1fr' for the text */
+  align-items: center; /* Center align items vertically */
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .direct-message-container:hover {
-    background-color: #e0e0e0;
+  background-color: #e0e0e0;
 }
 
 .direct-message-container img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
 }
 
 .direct-message-container h1 {
-    margin: 0;
-    margin-left: 5px;
-    color: #333;
+  margin: 0;
+  margin-left: 5px;
+  color: #333;
 }
 
 .direct-message-container.selected {
-    background-color: #007bff;
-    color: #fff; 
+  background-color: #007bff;
+  color: #fff;
 }
 
 .direct-message-container.selected h1 {
-    color: #fff; 
+  color: #fff;
 }
 
 .img-placeholder {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    margin-right: 10px;
-    background-color: #ccc;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  margin-right: 10px;
+  background-color: #ccc;
 }
 
 .text-placeholder {
-    margin: 0;
-    margin-left: 5px;
-    width: 75%;
-    height: 30px;
-    border-radius: 10px;
-    margin-right: 10px;
-    background-color: #ccc;
+  margin: 0;
+  margin-left: 5px;
+  width: 75%;
+  height: 30px;
+  border-radius: 10px;
+  margin-right: 10px;
+  background-color: #ccc;
 }

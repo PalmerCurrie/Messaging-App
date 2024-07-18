@@ -1,86 +1,85 @@
 /* DirectMessageSidebar.css */
 
 .container {
-    display: flex;
-    flex-direction: column;
-    /* border-right: 1px solid #ddd; */
-    margin-top: 0px;
-    padding: 20px;
-    height: 100%;
-  }
+  display: flex;
+  flex-direction: column;
+  /* border-right: 1px solid #ddd; */
+  margin-top: 0px;
+  padding: 20px;
+  height: 100%;
+}
 
-  .header {
-    text-align: center;
-  }
+.header {
+  text-align: center;
+}
 
-  .header h1 {
-    margin: 0px;
-    margin-left: 20px;
-    text-align: center;
-  }
-  
-  h1 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #333;
-  }
-  
-  .chat-preview {
-    background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center;
-  }
+.header h1 {
+  margin: 0px;
+  margin-left: 20px;
+  text-align: center;
+}
 
-    
-  .chat-preview-selected {
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-    text-align: center;
-    background-color: #007bff;
-  }
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+  color: #333;
+}
 
-  .chat-preview-selected h1 { 
-    color: white;
-  }
-  
-  .chat-preview:hover {
-    background-color: #e0e0e0;
-  }
-  
-  .direct-messages-container {
-    margin-top: 20px;
-    overflow-y: auto;
-    max-height: 60vh; /* Adjust according to your needs */
-  }
-  
-  .add-user {
-    margin-top: 20px;
-  }
-  
-  .add-user input {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    margin-right: 10px;
-  }
-  
-  .add-user button {
-    padding: 10px;
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .add-user button:hover {
-    background-color: #45a049;
-    transition: background-color 0.3s;
-  }
+.chat-preview {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.chat-preview-selected {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  text-align: center;
+  background-color: #007bff;
+}
+
+.chat-preview-selected h1 {
+  color: white;
+}
+
+.chat-preview:hover {
+  background-color: #e0e0e0;
+}
+
+.direct-messages-container {
+  margin-top: 20px;
+  overflow-y: auto;
+  max-height: 60vh; /* Adjust according to your needs */
+}
+
+.add-user {
+  margin-top: 20px;
+}
+
+.add-user input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.add-user button {
+  padding: 10px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-user button:hover {
+  background-color: #45a049;
+  transition: background-color 0.3s;
+}

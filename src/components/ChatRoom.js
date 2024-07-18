@@ -1,29 +1,38 @@
-import ChatMessage from './ChatMessage.js'
-import { useRef, useState, useEffect } from 'react';
-import { collection, query, orderBy, limit, serverTimestamp, addDoc  } from 'firebase/firestore';
-import { useCollectionData } from 'react-firebase-hooks/firestore';
-import { doc, updateDoc, getDoc } from "firebase/firestore";
-import { v4 as uuidv4 } from 'uuid';
+import ChatMessage from "./ChatMessage.js";
+import DirectMessageSidebar from "./DirectMessageSidebar.js";
+import { useRef, useState, useEffect } from "react";
+import {
+  collection,
+  query,
+  orderBy,
+  limit,
+  serverTimestamp,
+  addDoc,
+  deleteDoc,
+  where,
+  getDocs,
+  doc,
+  getDoc,
+} from "firebase/firestore";
+import { useCollectionData } from "react-firebase-hooks/firestore";
+import { v4 as uuidv4 } from "uuid";
 import "../styles/ChatRoom.css";
-import DirectMessageSidebar from './DirectMessageSidebar.js';
 
-
-function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
+function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
   // When user adds a new message to chat, it creates a document in the database collection
-    
+
   // Reference the Firestore collection
-  const messagesRef = collection(firestore, 'messages');
+  const messagesRef = collection(firestore, "messages");
 
   // Query documents in the collection
-  const q = query(messagesRef, orderBy('createdAt'), limit(25));
+  const q = query(messagesRef, orderBy("createdAt"), limit(25));
 
   // Listen to data with a hook
-  const [messages, error] = useCollectionData(q, { idField: 'id' });
+  const [messages, error] = useCollectionData(q, { idField: "id" });
 
   const scrollDown = useRef(); // Scrolls down to bottom of messages each time message sent
 
   const [formValue, setFormValue] = useState("");
-
 
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
@@ -31,37 +40,37 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
   const [chatName, setChatName] = useState("");
   const fetchChatName = async () => {
     if (recieverID == "global") {
-        setChatName("global");
-        return;
-    } 
+      setChatName("global");
+      return;
+    }
     if (user) {
-        try {
-          const userDocRef = doc(firestore, 'users', recieverID);
-          const docSnap = await getDoc(userDocRef);
-          if (docSnap.exists()) {
-            setChatName(docSnap.data().customUserName);
-          } else {
-            console.log('User document does not exist');
-          }
-        } catch (error) {
-          console.error('Error fetching user data:', error);
-        } 
-      } 
-  }
+      try {
+        const userDocRef = doc(firestore, "users", recieverID);
+        const docSnap = await getDoc(userDocRef);
+        if (docSnap.exists()) {
+          setChatName(docSnap.data().customUserName);
+        } else {
+          console.log("User document does not exist");
+        }
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
       if (user) {
         try {
-          const userDocRef = doc(firestore, 'users', user.uid);
+          const userDocRef = doc(firestore, "users", user.uid);
           const docSnap = await getDoc(userDocRef);
           if (docSnap.exists()) {
             setUserData(docSnap.data());
           } else {
-            console.log('User document does not exist');
+            console.log("User document does not exist");
           }
         } catch (error) {
-          console.error('Error fetching user data:', error);
+          console.error("Error fetching user data:", error);
         } finally {
           setLoading(false);
         }
@@ -73,134 +82,158 @@ function ChatRoom( {user, firestore, recieverID, setRecieverID } ) {
     fetchChatName();
   }, [user, recieverID]);
 
+  const sendMessage = async (e) => {
+    e.preventDefault(); // Stop page form refreshing when form is submit
 
-    
+    const { uid, photoURL, displayName } = user;
+    const uniqueId = uuidv4(); // Generate a unique ID for the message
 
+    // Create new document in 'messages' database, takes JavaScript object as argument
+    if (formValue !== "") {
+      try {
+        await addDoc(messagesRef, {
+          id: uniqueId,
+          text: formValue,
+          createdAt: serverTimestamp(),
+          photoURL,
+          displayName,
+          customUserName: userData.customUserName,
+          senderID: user.uid,
+          recieverID,
+        });
 
+        setFormValue("");
 
-
-    const sendMessage = async(e) => {
-        e.preventDefault(); // Stop page form refreshing when form is submit
-
-        const {uid, photoURL, displayName} = user
-        const uniqueId = uuidv4(); // Generate a unique ID for the message
-
-
-        // Create new document in 'messages' database, takes JavaScript object as argument
-        if (formValue !== "") {
-            try {
-                await addDoc(messagesRef, {
-                    id: uniqueId, // Add the unique ID to the message data
-                    text: formValue,
-                    createdAt: serverTimestamp(),
-                    photoURL,
-                    displayName,
-                    customUserName: userData.customUserName,
-                    senderID: user.uid,
-                    recieverID,
-                });
-
-                setFormValue('');
-
-                scrollDown.current.scrollIntoView( { behavior: 'smooth' } );
-            } catch (error) {
-                console.error('Error adding message: ', error);
-            }
-        }
-    } 
-
-    if (loading || error || !userData) {
-        return (
-        <div className="wrapper">
-          <div className="left-div">
-
-          </div>
-          <div className="centered-div">
-            <div className='chatroom-container'>
-                <div className='chatroom-header-loading'>
-                  <h2> Loading... </h2>
-
-              </div>
-            </div>
-          </div>
-          <div className="right-div">
-
-          </div>
-        </div>
-        )
+        scrollDown.current.scrollIntoView({ behavior: "smooth" });
+      } catch (error) {
+        console.error("Error adding message: ", error);
+      }
     }
+  };
 
-    if (!user) {
-        return (
-            <div>
-                <p>Please Sign In in the Profile Section</p>
-            </div>
-        )
+  // Handling deleting a message
+  const handleDeleteMessage = async (messageID) => {
+    try {
+      // Create a query against the collection
+      const q = query(
+        collection(firestore, "messages"),
+        where("id", "==", messageID)
+      );
+
+      // Get the documents matching the query
+      const querySnapshot = await getDocs(q);
+
+      querySnapshot.forEach(async (document) => {
+        await deleteDoc(document.ref);
+        console.log(`Document with ID ${document.id} successfully deleted!`);
+      });
+
+      if (querySnapshot.empty) {
+        console.log("No document found with ID: ", messageID);
+      }
+    } catch (error) {
+      console.log("Error removing document: ", error);
     }
+  };
 
-
+  // Outline for page Loading
+  if (loading || error || !userData) {
     return (
-    <div className='wrapper'>
-        <div className='left-div'>
-            <DirectMessageSidebar 
-                user={user} 
-                setRecieverID={setRecieverID} 
-                firestore={firestore}
-                recieverID={recieverID}/>
-        </div>
-        <div className='centered-div'>
-            <div className='chatroom-container'>
-                <div className='chatroom-header'>
-                <h2>{chatName === "global" ? "Global" : chatName}</h2>
-                    {/* Add any additional elements for the header/bar here */}
-                </div>
-                <div className='messages'>
-                    {messages && messages.map(msg => {
-                        if (recieverID === 'global') {
-                            // Display all messages when recieverID is 'global'
-                            const globalCase = msg.recieverID === "global";
-                            if (globalCase) {
-                                return <ChatMessage 
-                                  key={msg.id} 
-                                  message={msg} 
-                                  sender={msg.senderID == user.uid} 
-                                  currentUser={user} 
-                                  isGlobal={true} />;
-                            }
-                        } else {
-                            // Check if the message matches either of the direct messaging cases
-                            const case1 = msg.senderID === user.uid && msg.recieverID === recieverID;
-                            const case2 = msg.senderID === recieverID && msg.recieverID === user.uid;
-                            if (case1 || case2) {
-                                return <ChatMessage 
-                                  key={msg.id} 
-                                  message={msg} 
-                                  currentUser={user} 
-                                  sender={msg.senderID == user.uid} 
-                                  isGlobal={false} />;
-                            } else {
-                                return null;
-                            }
-                        }
-                    })}
-                    <div ref={scrollDown}></div>
-                </div>
-
-                <form onSubmit={sendMessage} className='message-form'>
-
-                    <input 
-                        type="text" 
-                        value={formValue} 
-                        onChange={(e) => setFormValue(e.target.value)} 
-                        placeholder='Type your message...'/>
-                    <button type="submit">Send</button>
-
-                </form>
+      <div className="wrapper">
+        <div className="left-div"></div>
+        <div className="centered-div">
+          <div className="chatroom-container">
+            <div className="chatroom-header-loading">
+              <h2> Loading... </h2>
             </div>
+          </div>
         </div>
-        <div className='right-div'></div>
+        <div className="right-div"></div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div>
+        <p>Please Sign In in the Profile Section</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="wrapper">
+      <div className="left-div">
+        <DirectMessageSidebar
+          user={user}
+          setRecieverID={setRecieverID}
+          firestore={firestore}
+          recieverID={recieverID}
+        />
+      </div>
+      <div className="centered-div">
+        <div className="chatroom-container">
+          <div className="chatroom-header">
+            <h2>{chatName === "global" ? "Global" : chatName}</h2>
+            {/* Add any additional elements for the header/bar here */}
+          </div>
+          <div className="messages">
+            {messages &&
+              messages.map((msg) => {
+                if (recieverID === "global") {
+                  // Display all messages when recieverID is 'global'
+                  const globalCase = msg.recieverID === "global";
+                  if (globalCase) {
+                    return (
+                      <ChatMessage
+                        key={msg.id}
+                        message={msg}
+                        sender={msg.senderID == user.uid}
+                        currentUser={user}
+                        isGlobal={true}
+                        handleDeleteMessage={handleDeleteMessage}
+                      />
+                    );
+                  }
+                } else {
+                  // Check if the message matches either of the direct messaging cases
+                  const case1 =
+                    msg.senderID === user.uid && msg.recieverID === recieverID;
+                  const case2 =
+                    msg.senderID === recieverID && msg.recieverID === user.uid;
+                  if (case1 || case2) {
+                    return (
+                      <ChatMessage
+                        key={msg.id}
+                        message={msg}
+                        currentUser={user}
+                        sender={msg.senderID == user.uid}
+                        isGlobal={false}
+                        handleDeleteMessage={handleDeleteMessage}
+                      />
+                    );
+                  } else {
+                    return null;
+                  }
+                }
+              })}
+            <div ref={scrollDown}></div>
+          </div>
+
+          <form onSubmit={sendMessage} className="message-form">
+            <input
+              type="text"
+              value={formValue}
+              onChange={(e) => setFormValue(e.target.value)}
+              placeholder="Type your message..."
+            />
+            <button type="submit">Send</button>
+          </form>
+        </div>
+      </div>
+      <div className="right-div"></div>
     </div>
-    )
+  );
 }
 
 export default ChatRoom;

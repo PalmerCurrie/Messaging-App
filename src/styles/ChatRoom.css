@@ -7,7 +7,8 @@
   overflow-y: hidden;
 }
 
-.left-div, .right-div {
+.left-div,
+.right-div {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,7 +44,7 @@
   z-index: 1;
   border-bottom: 1px solid #006bdd;
   font-size: 24px;
-} 
+}
 
 .chatroom-header h2 {
   margin-right: 15px;
