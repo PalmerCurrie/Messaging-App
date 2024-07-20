@@ -72,16 +72,16 @@
   display: block;
 }
 
-  .popup-menu {
-    position: absolute;
-    top: -30px; /* Adjust based on where you want the menu to appear */
-    left: -37px;
-    background: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-    z-index: 1000;
-  }
+.popup-menu {
+  position: absolute;
+  top: -30px; /* Adjust based on where you want the menu to appear */
+  left: -37px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+}
 
 .popup-menu-item {
   padding: 8px 16px;
@@ -90,4 +90,13 @@
 
 .popup-menu-item:hover {
   background-color: #f5f5f5;
+}
+
+
+.message.sent .popup-menu {
+  display: none;
+}
+
+.message.sent:hover .popup-menu {
+  display: block;
 }
