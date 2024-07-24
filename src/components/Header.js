@@ -1,28 +1,23 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from "react";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
 import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
 
-function Header({ user, auth, firestore }) {
+import { auth, fetchUserData } from "../backend/backend.js";
+
+function Header({ user }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        const userDocRef = doc(firestore, "users", user.uid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          setUserData(docSnap.data());
-        } else {
-          console.log("User document does not exist");
-        }
-      }
+    const getUserData = async () => {
+      const data = await fetchUserData(user);
+      setUserData(data);
     };
 
-    fetchUserData();
-  }, [user, firestore]);
+    getUserData();
+  }, [user]);
+
   const loadUserProfile = () => {
     return userData ? (
       <div className="header-profile-container">
@@ -63,7 +58,7 @@ function Header({ user, auth, firestore }) {
         <Link to="/profile">
           <div className="profile">
             {!user ? (
-              <SignIn auth={auth} firestore={firestore} />
+              <SignIn auth={auth} />
             ) : (
               loadUserProfile() // Call the function here
             )}

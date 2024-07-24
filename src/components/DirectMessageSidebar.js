@@ -1,22 +1,12 @@
 import "../styles/DirectMessageSidebar.css";
 import { useEffect, useState } from "react";
-import {
-  doc,
-  getDoc,
-  updateDoc,
-  arrayUnion,
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
 import DirectMessage from "./DirectMessage.js";
+import { fetchDirectMessages, addFriend } from "../backend/backend.js";
 
-function DirectMessageSidebar({ user, setRecieverID, firestore, recieverID }) {
+function DirectMessageSidebar({ user, setRecieverID, recieverID }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleChatPreviewClick = (id) => {
-    // console.log("Clicked on Div with ID: ", id);
     setRecieverID(id);
   };
 
@@ -26,76 +16,36 @@ function DirectMessageSidebar({ user, setRecieverID, firestore, recieverID }) {
 
   const [loading, setLoading] = useState(false);
   const [directMessages, setDirectMessages] = useState([]);
-  const [userData, setUserData] = useState(null);
-  useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        try {
-          const userDocRef = doc(firestore, "users", user.uid);
-          const docSnap = await getDoc(userDocRef);
-          if (docSnap.exists()) {
-            const data = docSnap.data();
-            setUserData(data);
-            setDirectMessages(data.directMessages || []);
-          } else {
-            console.log("User document does not exist");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          setLoading(false);
-        }
-      } else {
-        setLoading(false);
-      }
-    };
-    fetchUserData();
-  }, [user, firestore]);
 
-  if (loading) {
+  useEffect(() => {
+    const getUserData = async () => {
+      setLoading(true);
+      const newDirectMessages = await fetchDirectMessages(user);
+      setDirectMessages(newDirectMessages);
+      setLoading(false);
+    };
+
+    getUserData();
+  }, [user]);
+
+  if (loading || !directMessages) {
     return (
       <div>
         <p>Loading...</p>
       </div>
     );
-  }
+  } 
 
-  const handleAddFriend = async (e) => {
-    e.preventDefault();
-    // Add logic to find the user by email and update directMessages
+
+  const handleAddFriend = async () => {
     if (inputValue) {
-      try {
-        const usersCollection = collection(firestore, "users"); // Accessing collection from Firestore instance
-        const querySnapshot = await getDocs(
-          query(usersCollection, where("email", "==", inputValue))
-        );
-
-        if (!querySnapshot.empty) {
-          const friendId = querySnapshot.docs[0].id;
-
-          // Check if friendId is already in directMessages
-          if (directMessages.includes(friendId)) {
-            console.log("Friend is already added.");
-            setInputValue("");
-            return;
-          }
-
-          // Update directMessages for the current user
-          const userDocRef = doc(firestore, "users", user.uid);
-          await updateDoc(userDocRef, {
-            directMessages: arrayUnion(friendId),
-          });
-
-          // Update local state
-          setDirectMessages((prevMessages) => [...prevMessages, friendId]);
-          setInputValue("");
-        } else {
-          console.log("No user found with that email");
-        }
-      } catch (error) {
-        console.error("Error adding friend:", error);
-      }
-    }
+      await addFriend(inputValue, user)  
+      // Update local state
+      // need to implement this funciton
+      const newDirectMessageNames = await fetchDirectMessages(user);
+      setDirectMessages(newDirectMessageNames);
+      setInputValue("");
+    } 
   };
 
   const chatPreviewClass =
@@ -115,7 +65,6 @@ function DirectMessageSidebar({ user, setRecieverID, firestore, recieverID }) {
             <DirectMessage
               key={dm}
               useruid={dm}
-              firestore={firestore}
               handleDivClick={handleChatPreviewClick}
               recieverID={recieverID}
             />

@@ -2,7 +2,7 @@ import "../styles/UserProfile.css";
 import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import { useEffect, useState } from "react";
-import { doc, updateDoc, getDoc } from "firebase/firestore";
+import { fetchUserData, updateDisplayName } from "../backend/backend.js";
 
 function UserProfile({ user, auth, firestore }) {
   const [newName, setNewName] = useState("");
@@ -11,44 +11,23 @@ function UserProfile({ user, auth, firestore }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        const userDocRef = doc(firestore, "users", user.uid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          setUserData(docSnap.data());
-        } else {
-          console.log("User document does not exist");
-        }
-      }
+    const getUserData = async () => {
+      const data = await fetchUserData(user);
+      setUserData(data);
     };
 
-    fetchUserData();
-  }, [user, firestore]);
+    getUserData();
+  }, [user]);
+
+
+  const openDisplayNameForm = () => {
+    setEditMode(true);
+  }
 
   const handleUpdateDisplayName = () => {
-    setEditMode(true);
-  };
-  const updateDisplayName = async (e) => {
-    e.preventDefault();
-    try {
-      const userRef = doc(firestore, "users", user.uid);
-      const userSnap = await getDoc(userRef);
-
-      if (userSnap.exists()) {
-        // Document exists, proceed with update
-        await updateDoc(userRef, {
-          customUserName: newName,
-        });
-        userData.customUserName = newName;
-        setEditMode(false);
-      } else {
-        console.error("Document does not exist");
-      }
-    } catch (error) {
-      console.error("Error updating display name:", error);
-    }
-  };
+    updateDisplayName(newName, user);
+    setEditMode(false);
+  }
 
   if (!user) {
     return (
@@ -97,7 +76,7 @@ function UserProfile({ user, auth, firestore }) {
         </div>
         <div className="text-container">
           {editMode ? (
-            <form onSubmit={updateDisplayName}>
+            <form onSubmit={handleUpdateDisplayName}>
               <input
                 type="text"
                 onChange={(e) => setNewName(e.target.value)}
@@ -116,7 +95,7 @@ function UserProfile({ user, auth, firestore }) {
         </div>
         <div className="button-container">
           {!editMode && (
-            <button className="edit-button" onClick={handleUpdateDisplayName}>
+            <button className="edit-button" onClick={openDisplayNameForm}>
               Edit Display Name
             </button>
           )}

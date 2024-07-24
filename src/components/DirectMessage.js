@@ -1,25 +1,18 @@
 import { useState, useEffect } from "react";
-import { doc, getDoc } from "firebase/firestore"; // Import Firestore functions as needed
 import "../styles/DirectMessage.css";
+import { fetchUserData } from "../backend/backend";
 
-function DirectMessage({ useruid, firestore, handleDivClick, recieverID }) {
+function DirectMessage({ user, useruid, handleDivClick, recieverID }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (useruid) {
-        const userDocRef = doc(firestore, "users", useruid);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          setUserData(docSnap.data());
-        } else {
-          console.log("User document does not exist");
-        }
-      }
+    const getUserData = async () => {
+      const data = await fetchUserData(user);
+      setUserData(data);
     };
 
-    fetchUserData();
-  }, [useruid]);
+    getUserData();
+  }, [user, useruid]);
 
   const handleClick = () => {
     handleDivClick(useruid);

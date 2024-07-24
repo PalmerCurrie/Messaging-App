@@ -1,0 +1,379 @@
+import { initializeApp } from "firebase/app";
+// import { createHash } from 'crypto';
+import {
+    collection,
+    serverTimestamp,
+    query,
+    where,
+    getDocs,
+    doc,
+    setDoc,
+    getFirestore,
+    orderBy,
+    limit,
+    addDoc,
+    deleteDoc,
+    getDoc,
+    updateDoc,
+    arrayUnion,
+  } from "firebase/firestore";
+import { signInWithPopup, GoogleAuthProvider, signOut, getAuth } from "firebase/auth";
+
+
+
+// App:
+
+const firebaseConfig = {
+    apiKey: "AIzaSyA8vNUAKgWZAg5h4S0IruOe6DvjE2rYUwc",
+    authDomain: "messaging-app-f254c.firebaseapp.com",
+    projectId: "messaging-app-f254c",
+    storageBucket: "messaging-app-f254c.appspot.com",
+    messagingSenderId: "298980020951",
+    appId: "1:298980020951:web:5c237d7e0385d56dd69692",
+    measurementId: "G-V6CE7T8Y4P",
+  };
+
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const firestore = getFirestore(app);
+
+
+// function addUserToDatabase(user) {
+//     checkIfUserExists(user);
+// }
+
+function checkIfUserExists(user) {
+    const usersRef = collection(firestore, "users");
+    if (user) {
+        // Check if user already exists in Firestore
+        const userQuery = query(usersRef, where("uid", "==", user.uid));
+        getDocs(userQuery)
+          .then((querySnapshot) => {
+            if (querySnapshot.empty) {
+              addUserToFirestore(user);
+            } else {
+              console.log("User already exists in Firestore");
+            }
+          })
+          .catch((error) => {
+            console.error("Error checking user existence: ", error);
+          });
+      }
+}
+
+
+// Add User to Firestore Database if user does not exist already
+async function addUserToFirestore(userData) {
+    try {
+      const userRef = doc(firestore, "users", userData.uid);
+      await setDoc(userRef, {
+        uid: userData.uid,
+        email: userData.email,
+        displayName: userData.displayName,
+        photoURL: userData.photoURL,
+        createdAt: serverTimestamp(),
+        customUserName: userData.displayName,
+        directMessages: [],
+      });
+
+      console.log("User added to Firestore with ID: ", userData.uid);
+    } catch (error) {
+      console.error("Error adding user to Firestore: ", error);
+    }
+};
+
+
+
+
+
+
+
+// ChatRoom:
+
+async function getGlobalMessages() {
+  try {
+    const messagesRef = collection(firestore, "messages");
+    const chatMessageQuery = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
+    const querySnapshot = await getDocs(chatMessageQuery);
+
+    const chatMessages = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+
+    return chatMessages;
+  } catch (error) {
+    console.error("Error fetching global messages:", error);
+    return [];
+  }
+}
+
+
+
+async function getDirectMessages(directMessageID) {
+
+
+}
+
+async function getChatName(recieverID) {
+  try {
+    const userDocRef = doc(firestore, "users", recieverID);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      // setUserData(docSnap.data());
+      // return userData?
+      const data = docSnap.data().customUserName;
+      return data;
+    } else {
+      console.log("User document does not exist");
+    }
+  } catch (error) {
+    console.log("Error getting chat name: ", error);
+  }
+}
+
+
+// fetchUserData
+async function fetchUserData(user) {
+  if (user) {
+    try {
+      const userDocRef = doc(firestore, "users", user.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        // setUserData(docSnap.data());
+        // return userData?
+        const data = docSnap.data();
+        return data;
+      } else {
+        console.log("User document does not exist");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
+};
+
+async function fetchDirectMessages(user) {
+  if (user) {
+    try {
+      const userDocRef = doc(firestore, "users", user.uid);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        const data = docSnap.data();
+        return data.directMessages || [];
+      } else {
+        console.log("User document does not exist");
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+      return [];
+    }
+  }
+  return [];
+}
+
+
+async function fetchChatName(recieverID) {
+  if (recieverID === "global") {
+    return "global";
+  }
+  try {
+    const userDocRef = doc(firestore, "users", recieverID);
+    const docSnap = await getDoc(userDocRef);
+    if (docSnap.exists()) {
+      return docSnap.data().customUserName;
+    } else {
+      console.log("User document does not exist");
+    }
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+};
+
+
+// Function to send a message
+async function sendMessage(messageObject) {
+  const messagesRef = collection(firestore, "messages");
+  
+  try {
+    await addDoc(messagesRef, messageObject);
+  } catch (error) {
+    console.error("Error adding message: ", error);
+  }
+};
+
+// Function to send directMessage...
+async function sendDirectMessage(messageObject, directMessageID) {
+  // parse database for directMessageID, 
+  // then add messageObject to collection
+}
+
+// Function to generate unique direct message ID given two users uids.
+// user input order does not matter
+// returns a string of a unique hash which will be used as the directMessageID
+async function getDirectMessageID(user1UID, user2UID) {
+  // Fetch user documents
+  const user1DocRef = doc(firestore, "users", user1UID);
+  const user2DocRef = doc(firestore, "users", user2UID);
+  
+  const user1Doc = await getDoc(user1DocRef);
+  const user2Doc = await getDoc(user2DocRef);
+
+  if (!user1Doc.exists() || !user2Doc.exists()) {
+    throw new Error('One or both user documents do not exist.');
+  }
+
+  const user1Data = user1Doc.data();
+  const user2Data = user2Doc.data();
+
+  // Compare creation dates to determine order
+  const user1CreatedAt = user1Data.createdAt;
+  const user2CreatedAt = user2Data.createdAt;
+
+  let user1, user2;
+  if (user1CreatedAt.seconds < user2CreatedAt.seconds) {
+    user1 = user1UID;
+    user2 = user2UID;
+  } else {
+    user1 = user2UID;
+    user2 = user1UID;
+  }
+
+  // Concatenate user uids in consistent order
+  const concatenatedUIDs = `${user1}-${user2}`;
+
+  // Generate a hash of the concatenated uids
+  // const hash = createHash('sha256').update(concatenatedUIDs).digest('hex');
+  const hash = "test hash, need to update the createHash function from the crypto library";
+  console.log("uniqueID for: ", user1UID, user2UID, hash);  // Placeholder for testing function
+
+  return hash;
+}
+  
+
+// ChatMessage
+
+
+// General function to handle deleting messages
+// collectionName: "messages" for global.
+// collectionName: directMessageID for direct messages
+async function deleteMessage(collectionName, messageID) {
+  try {
+    // Create a query against the collection
+    const q = query(
+      collection(firestore, collectionName),
+      where("id", "==", messageID)
+    );
+
+    // Get the documents matching the query
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(async (document) => {
+      await deleteDoc(document.ref);
+      console.log(`Document with ID ${document.id} successfully deleted!`);
+    });
+
+    if (querySnapshot.empty) {
+      console.log("No document found with ID: ", messageID);
+    }
+  } catch (error) {
+    console.log("Error removing document: ", error);
+  }
+}
+
+
+
+// DirectMessageSidebar:
+
+
+// Function to addFriend given email
+async function addFriend(userEmail, user) {
+    try {
+      const usersCollection = collection(firestore, "users"); // Accessing collection from Firestore instance
+      const querySnapshot = await getDocs(
+        query(usersCollection, where("email", "==", userEmail))
+      );
+
+      if (!querySnapshot.empty) {
+        const friendID = querySnapshot.docs[0].id;
+
+        // Check if friendId is already in directMessages
+        if (user.directMessages.includes(friendID)) {
+          console.log("Friend is already added.");
+          return;
+        }
+
+        // Update directMessages for the current user
+//!!!!!  This part will have to change when I redesign the way directMessages are handled
+        const userDocRef = doc(firestore, "users", user.uid);
+        await updateDoc(userDocRef, {
+          directMessages: arrayUnion(friendID),
+        });
+      } else {
+        console.log("No user found with that email");
+      }
+    } catch (error) {
+      console.error("Error adding friend:", error);
+    }
+};
+
+
+
+// SignIn / SignOut
+
+function signInWithGoogle() {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider);
+};
+
+function handleSignOut() {
+  auth.currentUser && signOut(auth);
+}
+
+
+
+// UserProfile:
+
+
+// updateDisplayName
+async function updateDisplayName(newDisplayName, user) {
+  try {
+    const userRef = doc(firestore, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+    if (userSnap.exists()) {
+      // Document exists, proceed with update
+      await updateDoc(userRef, {
+        customUserName: newDisplayName,
+      });
+      user.customUserName = newDisplayName;
+    } else {
+      console.error("Document does not exist");
+    }
+  } catch (error) {
+    console.error("Error updating display name: ", error);
+  }
+};
+
+
+export {
+  // addUserToDatabase, 
+  auth,
+  checkIfUserExists,
+  addUserToFirestore, 
+  getGlobalMessages, 
+  getDirectMessages, 
+  getChatName, 
+  fetchUserData,
+  fetchDirectMessages,
+  fetchChatName,
+  sendMessage,
+  sendDirectMessage,
+  getDirectMessageID,
+  deleteMessage,
+  addFriend,
+  signInWithGoogle,
+  handleSignOut,
+  updateDisplayName,
+}

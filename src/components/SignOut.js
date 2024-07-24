@@ -1,8 +1,12 @@
-import { signOut } from "firebase/auth";
+import { handleSignOut } from "../backend/backend.js";
 
 function SignOut({ auth }) {
+  const handleClick = () => {
+    handleSignOut();
+  }
+
   return (
-    auth.currentUser && <button onClick={() => signOut(auth)}>Sign Out</button>
+    <button onClick={() => handleClick()}>Sign Out</button>
   );
 }
 

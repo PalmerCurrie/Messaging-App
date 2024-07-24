@@ -2,110 +2,79 @@
 import ChatMessage from "./ChatMessage.js";
 import DirectMessageSidebar from "./DirectMessageSidebar.js";
 import { useRef, useState, useEffect } from "react";
-import {
-  collection,
-  query,
-  orderBy,
-  limit,
-  serverTimestamp,
-  addDoc,
-  deleteDoc,
-  where,
-  getDocs,
-  doc,
-  getDoc,
-} from "firebase/firestore";
-import { useCollectionData } from "react-firebase-hooks/firestore";
 import { v4 as uuidv4 } from "uuid";
 import "../styles/ChatRoom.css";
+import { getDirectMessageID, 
+         getGlobalMessages, 
+         getDirectMessages, 
+         fetchUserData, 
+         fetchChatName, 
+         sendDirectMessage,
+         sendMessage,
+         deleteMessage,
+      } from "../backend/backend.js";
+import { serverTimestamp } from "firebase/firestore";
 
-function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
+
+function ChatRoom({ user, recieverID, setRecieverID }) {
   // Reference the Firestore collection
-  const messagesRef = collection(firestore, "messages");
-
-  // Query documents in the collection
-  const q = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
-
-  // Listen to data with a hook
-  const [messages, error] = useCollectionData(q, { idField: "id" });
-
+  const [messages, setMessages] = useState(null);
   const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
   const [formValue, setFormValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
-
+    
   const [chatName, setChatName] = useState("");
-  const fetchChatName = async () => {
-    if (recieverID === "global") {
-      setChatName("global");
-      return;
-    }
-    if (user) {
-      try {
-        const userDocRef = doc(firestore, "users", recieverID);
-        const docSnap = await getDoc(userDocRef);
-        if (docSnap.exists()) {
-          setChatName(docSnap.data().customUserName);
-        } else {
-          console.log("User document does not exist");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    }
-  };
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      if (user) {
-        try {
-          const userDocRef = doc(firestore, "users", user.uid);
-          const docSnap = await getDoc(userDocRef);
-          if (docSnap.exists()) {
-            setUserData(docSnap.data());
-          } else {
-            console.log("User document does not exist");
-          }
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        } finally {
-          setLoading(false);
-        }
+    const getUserMessages = async () => {
+      if (recieverID === "global") {
+        setLoading(true);
+        const newMessages = await getGlobalMessages();
+        setMessages(newMessages);
       } else {
-        setLoading(false);
+        setLoading(true);
+        const dmID = getDirectMessageID(user.uid, recieverID);
+        const newDirectMessages = await getDirectMessages(dmID);
+        setMessages(newDirectMessages);
       }
-    };
-    fetchUserData();
-    fetchChatName();
-  }, [user, recieverID]);
-
-  const sendMessage = async (e) => {
-    e.preventDefault(); // Stop page form refreshing when form is submit
-
-    const { photoURL, displayName } = user;
-    const uniqueId = uuidv4(); // Generate a unique ID for the message
-
-    // Create new document in 'messages' database, takes JavaScript object as argument
-    if (formValue !== "") {
-      try {
-        await addDoc(messagesRef, {
-          id: uniqueId,
-          text: formValue,
-          createdAt: serverTimestamp(),
-          photoURL,
-          displayName,
-          customUserName: userData.customUserName,
-          senderID: user.uid,
-          recieverID,
-        });
-
-        setFormValue("");
-        scrollToBottom();
-      } catch (error) {
-        console.error("Error adding message: ", error);
-      }
+      setLoading(false);
     }
-  };
+    const getOtherData = async () => {
+      setLoading(true);
+      const data = await fetchUserData(user);
+      setUserData(data);
+      const newChatName = await fetchChatName(recieverID);
+      setChatName(newChatName);
+      setLoading(false);
+    };
+
+    getOtherData();
+    getUserMessages();
+  }, [ user, recieverID ]);
+
+  const handleSendNewMessage = async () => {
+    const uniqueID = uuidv4();
+    const messageObject = {
+      id: uniqueID,
+      text: formValue,
+      createdAt: serverTimestamp(),
+      photoURL: user.photoURL,
+      displayName: user.displayName,
+      customUserName: userData.customUserName,
+      senderID: user.uid,
+      recieverID,
+    }
+
+
+    if (recieverID === "global") {
+      await sendMessage(messageObject);
+    } else {
+      // await sendDirectMessage(messageObject, directMessageID);
+    }
+    setFormValue("");
+    scrollToBottom();
+  }
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -117,32 +86,12 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
   };
 
   // Handling deleting a message
-  const handleDeleteMessage = async (messageID) => {
-    try {
-      // Create a query against the collection
-      const q = query(
-        collection(firestore, "messages"),
-        where("id", "==", messageID)
-      );
-
-      // Get the documents matching the query
-      const querySnapshot = await getDocs(q);
-
-      querySnapshot.forEach(async (document) => {
-        await deleteDoc(document.ref);
-        console.log(`Document with ID ${document.id} successfully deleted!`);
-      });
-
-      if (querySnapshot.empty) {
-        console.log("No document found with ID: ", messageID);
-      }
-    } catch (error) {
-      console.log("Error removing document: ", error);
-    }
+  const handleDeleteMessage = async (collectionName, messageID) => {
+    deleteMessage(collectionName, messageID);
   };
 
   // Outline for page Loading
-  if (loading || error || !userData) {
+  if (loading || !userData) {
     return (
       <div className="wrapper">
         <div className="left-div"></div>
@@ -172,7 +121,6 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
         <DirectMessageSidebar
           user={user}
           setRecieverID={setRecieverID}
-          firestore={firestore}
           recieverID={recieverID}
         />
       </div>
@@ -219,7 +167,7 @@ function ChatRoom({ user, firestore, recieverID, setRecieverID }) {
                 })}
           </div>
 
-          <form onSubmit={sendMessage} className="message-form">
+          <form onSubmit={handleSendNewMessage} className="message-form">
             <input
               type="text"
               value={formValue}
