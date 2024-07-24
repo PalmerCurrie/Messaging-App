@@ -112,7 +112,25 @@ async function getGlobalMessages() {
 
 
 async function getDirectMessages(directMessageID) {
+  try {
 
+    if (typeof directMessageID !== 'string') {
+      throw new Error('directMessageID must be a string.');
+    }
+
+    const messagesRef = collection(firestore, directMessageID);
+    const chatMessageQuery = query(messagesRef, orderBy("createdAt", "desc"), limit(25));
+    const querySnapshot = await getDocs(chatMessageQuery);
+
+    const chatMessages = querySnapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    return chatMessages;
+  } catch (error) {
+    console.log("Error fetching direct messages: ", directMessageID, error);
+    return [];
+  }
 
 }
 
@@ -204,11 +222,24 @@ async function sendMessage(messageObject) {
   }
 };
 
-// Function to send directMessage...
+// Function to send a direct message
 async function sendDirectMessage(messageObject, directMessageID) {
-  console.log("Sending Direct Message in backend, ", messageObject, directMessageID);
-  // parse database for directMessageID, 
-  // then add messageObject to collection
+  try {
+    console.log("Sending Direct Message in backend", messageObject, directMessageID);
+
+    // Create a reference to the collection using the directMessageID as the collection name
+    const collectionRef = collection(firestore, directMessageID);
+
+    // Create a reference to the document with the id specified in messageObject
+    const docRef = doc(collectionRef, messageObject.id);
+
+    // Set the document with the messageObject data
+    await setDoc(docRef, messageObject);
+
+    console.log("Message successfully sent!");
+  } catch (error) {
+    console.error("Error sending direct message:", error);
+  }
 }
 
 // Function to generate unique direct message ID given two users uids.
@@ -232,26 +263,31 @@ async function getDirectMessageID(user1UID, user2UID) {
 // collectionName: "messages" for global.
 // collectionName: directMessageID for direct messages
 async function deleteMessage(collectionName, messageID) {
+  if (!collectionName || !messageID) {
+    console.error("Invalid collectionName or messageID");
+    return;
+  }
+
   try {
     // Create a query against the collection
-    const q = query(
-      collection(firestore, collectionName),
-      where("id", "==", messageID)
-    );
+    const messagesRef = collection(firestore, collectionName);
+    const q = query(messagesRef, where("id", "==", messageID));
 
     // Get the documents matching the query
     const querySnapshot = await getDocs(q);
 
-    querySnapshot.forEach(async (document) => {
-      await deleteDoc(document.ref);
-      console.log(`Document with ID ${document.id} successfully deleted!`);
-    });
-
     if (querySnapshot.empty) {
       console.log("No document found with ID: ", messageID);
+      return;
+    }
+
+    // Iterate through and delete each matching document
+    for (const document of querySnapshot.docs) {
+      await deleteDoc(document.ref);
+      console.log(`Document with ID ${document.id} successfully deleted!`);
     }
   } catch (error) {
-    console.log("Error removing document: ", error);
+    console.error("Error removing document: ", error);
   }
 }
 

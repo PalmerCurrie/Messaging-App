@@ -35,7 +35,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
         setMessages(newMessages);
       } else {
         setLoading(true);
-        const dmID = getDirectMessageID(user.uid, recieverID);
+        const dmID = await getDirectMessageID(user.uid, recieverID);
         const newDirectMessages = await getDirectMessages(dmID);
         setMessages(newDirectMessages);
       }
@@ -60,7 +60,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
         const newMessages = await getGlobalMessages();
         setMessages(newMessages);
       } else {
-        const dmID = getDirectMessageID(user.uid, recieverID);
+        const dmID = await getDirectMessageID(user.uid, recieverID);
         const newDirectMessages = await getDirectMessages(dmID);
         setMessages(newDirectMessages);
       }
@@ -106,7 +106,8 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
 
   // Handling deleting a message
   const handleDeleteMessage = async (collectionName, messageID) => {
-    deleteMessage(collectionName, messageID);
+    await deleteMessage(collectionName, messageID);
+    setMessageUpdateTrigger(prev => !prev);
   };
 
   // Outline for page Loading

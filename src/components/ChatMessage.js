@@ -67,11 +67,15 @@ function ChatMessage({
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const deleteMessage = () => {
-    if (message.id) {
-      handleDeleteMessage(message.id);
+  
+
+  const onDeleteMessageClick = async () => {
+    if (isGlobal) {
+      handleDeleteMessage("messages", message.id); 
     } else {
-      console.log("No message found with id: ", message.id);
+
+      // deleteMessage(directMessageID, message.id);
+
     }
   };
   
@@ -110,7 +114,7 @@ function ChatMessage({
           </div>
           {isMenuOpen && (
             <div className="popup-menu" ref={popupRef}>
-              <div className="popup-menu-item" onClick={deleteMessage}>
+              <div className="popup-menu-item" onClick={onDeleteMessageClick}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="16"
