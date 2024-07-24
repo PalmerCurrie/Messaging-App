@@ -50,6 +50,7 @@ function DirectMessageSidebar({ user, setRecieverID, recieverID }) {
 
   const chatPreviewClass =
     recieverID === "global" ? "chat-preview-selected" : "chat-preview";
+    
 
   return (
     <div className="container">

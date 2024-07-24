@@ -206,6 +206,7 @@ async function sendMessage(messageObject) {
 
 // Function to send directMessage...
 async function sendDirectMessage(messageObject, directMessageID) {
+  console.log("Sending Direct Message in backend, ", messageObject, directMessageID);
   // parse database for directMessageID, 
   // then add messageObject to collection
 }
@@ -214,44 +215,15 @@ async function sendDirectMessage(messageObject, directMessageID) {
 // user input order does not matter
 // returns a string of a unique hash which will be used as the directMessageID
 async function getDirectMessageID(user1UID, user2UID) {
-  // Fetch user documents
-  const user1DocRef = doc(firestore, "users", user1UID);
-  const user2DocRef = doc(firestore, "users", user2UID);
-  
-  const user1Doc = await getDoc(user1DocRef);
-  const user2Doc = await getDoc(user2DocRef);
+  // Ensure consistent ordering of UIDs
+  const [firstUID, secondUID] = [user1UID, user2UID].sort();
+  const concatenatedUIDs = `${firstUID}-${secondUID}`;
 
-  if (!user1Doc.exists() || !user2Doc.exists()) {
-    throw new Error('One or both user documents do not exist.');
-  }
+  console.log("DirectMessageID: ", concatenatedUIDs); // Placeholder for testing
 
-  const user1Data = user1Doc.data();
-  const user2Data = user2Doc.data();
-
-  // Compare creation dates to determine order
-  const user1CreatedAt = user1Data.createdAt;
-  const user2CreatedAt = user2Data.createdAt;
-
-  let user1, user2;
-  if (user1CreatedAt.seconds < user2CreatedAt.seconds) {
-    user1 = user1UID;
-    user2 = user2UID;
-  } else {
-    user1 = user2UID;
-    user2 = user1UID;
-  }
-
-  // Concatenate user uids in consistent order
-  const concatenatedUIDs = `${user1}-${user2}`;
-
-  // Generate a hash of the concatenated uids
-  // const hash = createHash('sha256').update(concatenatedUIDs).digest('hex');
-  const hash = "test hash, need to update the createHash function from the crypto library";
-  console.log("uniqueID for: ", user1UID, user2UID, hash);  // Placeholder for testing function
-
-  return hash;
+  return concatenatedUIDs;
 }
-  
+
 
 // ChatMessage
 

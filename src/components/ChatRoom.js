@@ -23,6 +23,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
   const [formValue, setFormValue] = useState("");
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [messageUpdateTrigger, setMessageUpdateTrigger] = useState(false);
     
   const [chatName, setChatName] = useState("");
 
@@ -51,9 +52,26 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
 
     getOtherData();
     getUserMessages();
-  }, [ user, recieverID ]);
+  }, [ user, recieverID]);
 
-  const handleSendNewMessage = async () => {
+  useEffect(() => {
+    const getUserMessages = async () => {
+      if (recieverID === "global") {
+        const newMessages = await getGlobalMessages();
+        setMessages(newMessages);
+      } else {
+        const dmID = getDirectMessageID(user.uid, recieverID);
+        const newDirectMessages = await getDirectMessages(dmID);
+        setMessages(newDirectMessages);
+      }
+    }
+    getUserMessages();
+
+  },[messageUpdateTrigger])
+
+  const handleSendNewMessage = async (e) => {
+    e.preventDefault();
+
     const uniqueID = uuidv4();
     const messageObject = {
       id: uniqueID,
@@ -65,15 +83,16 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
       senderID: user.uid,
       recieverID,
     }
-
-
     if (recieverID === "global") {
       await sendMessage(messageObject);
     } else {
-      // await sendDirectMessage(messageObject, directMessageID);
+      const directMessageID = await getDirectMessageID(user.uid, recieverID);
+      await sendDirectMessage(messageObject, directMessageID);
     }
     setFormValue("");
     scrollToBottom();
+      // Trigger re-fetching
+    setMessageUpdateTrigger(prev => !prev);
   }
 
   const scrollToBottom = () => {
