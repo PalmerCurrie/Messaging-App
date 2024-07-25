@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import "../styles/DirectMessage.css";
-import { fetchUserData } from "../backend/backend";
+import { fetchUserDataByID } from "../backend/backend";
 
-function DirectMessage({ user, useruid, handleDivClick, recieverID }) {
+function DirectMessage({ useruid, handleDivClick, recieverID }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
     const getUserData = async () => {
-      const data = await fetchUserData(user);
+      const data = await fetchUserDataByID(useruid);
       setUserData(data);
     };
 
     getUserData();
-  }, [user, useruid]);
+  }, [useruid]);
+  console.log(userData);
 
   const handleClick = () => {
     handleDivClick(useruid);

@@ -172,6 +172,24 @@ async function fetchUserData(user) {
   }
 };
 
+async function fetchUserDataByID(userID) {
+    try {
+      const userDocRef = doc(firestore, "users", userID);
+      const docSnap = await getDoc(userDocRef);
+      if (docSnap.exists()) {
+        // setUserData(docSnap.data());
+        // return userData?
+        const data = docSnap.data();
+        return data;
+      } else {
+        console.log("User document does not exist");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+};
+
+
 async function fetchDirectMessages(user) {
   if (user) {
     try {
@@ -374,6 +392,7 @@ export {
   getDirectMessages, 
   getChatName, 
   fetchUserData,
+  fetchUserDataByID,
   fetchDirectMessages,
   fetchChatName,
   sendMessage,
