@@ -137,13 +137,19 @@
 }
 
 .notification-container {
+  position: relative;
+  cursor: pointer;
+  padding: 10px;
   margin-right: 50px;
   display: flex;
+  border-radius: 8px;
   justify-content: center;
   align-items: center;
 }
 
 .notification-container p {
+  margin: 0;
+  font-size: 16px;
   width: 100%;
   text-align: center;
   display: flex;
@@ -153,22 +159,66 @@
 
 .notification-dropdown-container {
   position: absolute;
-  top: 100%; /* Position below the notifications icon */
-  left: 74.5%; /* Adjust as needed to align the dropdown */
-  width: 200px; /* Set a width for the dropdown */
+  top: 135%;
+  left: -50%;
+  width: 310%;
   background-color: white;
   border: 1px solid #ccc;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
-  z-index: 1000; /* Ensure it appears above other content */
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
 }
 
-.notification-dropdown-container h1,
-.notification-dropdown-container ul {
+.notification-dropdown-container h1 {
   margin: 0;
+  padding: 10px;
+  background-color: #f4f4f4;
+  border-bottom: 1px solid #ddd;
+}
+
+.notification-dropdown-container ul {
+  list-style-type: none;
   padding: 0;
-  list-style: none;
-  text-align: center;
-  justify-content: center;
+  margin: 0;
+}
+
+.friend-request-container {
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.friend-request-container li {
+  margin: 0;
+  font-size: 16px;
+  flex: 1;
+  text-align: left;
+}
+
+.friend-request-container button {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  margin: 0 4px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.friend-request-container button:hover {
+  background-color: #0871e0;
+}
+
+.friend-request-container button.ignore {
+  background-color: #dc3545;
+}
+
+.friend-request-container button.ignore:hover {
+  background-color: #c82333;
 }

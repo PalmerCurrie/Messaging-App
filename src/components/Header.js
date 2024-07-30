@@ -96,6 +96,7 @@ function Header({ user, refresh, setRefresh }) {
           Add
         </button>
         <button
+          className="ignore"
           onClick={() => {
             handleIgnoreFriend(friend);
           }}
