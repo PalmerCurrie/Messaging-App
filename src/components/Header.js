@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
@@ -40,6 +40,93 @@ function Header({ user }) {
     );
   };
 
+  const [isNotificationDropdownOpen, setIsNotificationDropdownOpen] =
+    useState(false);
+  const dropdownRef = useRef(null);
+
+  const handleToggleDropdown = () => {
+    setIsNotificationDropdownOpen((prevState) => !prevState);
+  };
+
+  const handleClickOutside = (event) => {
+    if (
+      isNotificationDropdownOpen &&
+      dropdownRef.current &&
+      !dropdownRef.current.contains(event.target)
+    ) {
+      setIsNotificationDropdownOpen(false);
+    }
+  };
+
+  // For handling clicks outside of notification dropdown menu
+  useEffect(() => {
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, [isNotificationDropdownOpen]);
+
+  const handleAddFriend = (friend) => {
+    console.log("Added friend:", friend);
+  };
+
+  const handleIgnoreFriend = (friend) => {
+    console.log("Ignored friend:", friend);
+  };
+
+  const friendRequestElement = (index, friend) => {
+    return (
+      <div className="friend-request-container">
+        <li key={index}>{friend}</li>
+        <button
+          onClick={() => {
+            handleAddFriend(friend);
+          }}
+        >
+          Add
+        </button>
+        <button
+          onClick={() => {
+            handleIgnoreFriend(friend);
+          }}
+        >
+          Ignore
+        </button>
+      </div>
+    );
+  };
+
+  const loadNotifications = () => {
+    if (!userData) {
+      return null;
+    }
+    return (
+      <div
+        className="notification-container"
+        onClick={(e) => {
+          e.stopPropagation();
+          handleToggleDropdown();
+        }}
+      >
+        <p>Notifications: {userData.friendRequests.length}</p>
+        {isNotificationDropdownOpen && (
+          <div
+            ref={dropdownRef}
+            className="notification-dropdown-container"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h1>Friend Requests: </h1>
+            <ul>
+              {userData?.friendRequests.map((friend, index) =>
+                friendRequestElement(index, friend)
+              )}
+            </ul>
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
     <>
       <header className="header">
@@ -55,6 +142,13 @@ function Header({ user }) {
             </li>
           </ul>
         </nav>
+        {!user ? (
+          <p> </p>
+        ) : (
+          // <div></div>
+          loadNotifications() // Call the function here
+        )}
+
         <Link to="/profile">
           <div className="profile">
             {!user ? (
