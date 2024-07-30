@@ -8,7 +8,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import { auth, checkIfUserExists,  } from "./backend/backend.js"
+import { auth, checkIfUserExists } from "./backend/backend.js";
 
 function App() {
   const [user] = useAuthState(auth);
@@ -24,16 +24,13 @@ function App() {
     setRecieverID("global");
   }, []);
 
+  const [refresh, setRefresh] = useState(false);
+
   return (
     <Router>
-      <Header user={user} />
+      <Header user={user} refresh={refresh} setRefresh={setRefresh} />
       <Routes>
-        <Route
-          path="/profile"
-          element={
-            <UserProfile user={user} />
-          }
-        />
+        <Route path="/profile" element={<UserProfile user={user} />} />
         <Route
           path="/message"
           element={
@@ -41,6 +38,7 @@ function App() {
               user={user}
               setRecieverID={setRecieverID}
               recieverID={recieverID}
+              refresh={refresh}
             />
           }
         />

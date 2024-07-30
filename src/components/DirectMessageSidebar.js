@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import DirectMessage from "./DirectMessage.js";
 import { fetchDirectMessages, addFriend } from "../backend/backend.js";
 
-function DirectMessageSidebar({ user, setRecieverID, recieverID }) {
+function DirectMessageSidebar({ user, setRecieverID, recieverID, refresh }) {
   const [inputValue, setInputValue] = useState("");
 
   const handleChatPreviewClick = (id) => {
@@ -26,7 +26,7 @@ function DirectMessageSidebar({ user, setRecieverID, recieverID }) {
     };
 
     getUserData();
-  }, [user]);
+  }, [user, refresh]);
 
   if (loading || !directMessages) {
     return (
@@ -34,23 +34,21 @@ function DirectMessageSidebar({ user, setRecieverID, recieverID }) {
         <p>Loading...</p>
       </div>
     );
-  } 
+  }
 
-
-  const handleAddFriend = async () => {
+  const handleAddFriend = async (e) => {
+    e.preventDefault();
     if (inputValue) {
-      await addFriend(inputValue, user)  
-      // Update local state
-      // need to implement this funciton
+      console.log("Adding friend: ", inputValue);
+      await addFriend(inputValue, user);
       const newDirectMessageNames = await fetchDirectMessages(user);
       setDirectMessages(newDirectMessageNames);
       setInputValue("");
-    } 
+    }
   };
 
   const chatPreviewClass =
     recieverID === "global" ? "chat-preview-selected" : "chat-preview";
-    
 
   return (
     <div className="container">

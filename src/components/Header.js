@@ -4,9 +4,14 @@ import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
 
-import { auth, fetchUserData } from "../backend/backend.js";
+import {
+  auth,
+  fetchUserData,
+  acceptFriendRequest,
+  ignoreFriendRequest,
+} from "../backend/backend.js";
 
-function Header({ user }) {
+function Header({ user, refresh, setRefresh }) {
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -16,7 +21,7 @@ function Header({ user }) {
     };
 
     getUserData();
-  }, [user]);
+  }, [user, refresh]);
 
   const loadUserProfile = () => {
     return userData ? (
@@ -64,14 +69,19 @@ function Header({ user }) {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNotificationDropdownOpen]);
 
-  const handleAddFriend = (friend) => {
-    console.log("Added friend:", friend);
+  const handleAddFriend = async (friendID) => {
+    console.log("Added friend:", friendID);
+    await acceptFriendRequest(friendID, user);
+    updateRefresh();
   };
 
-  const handleIgnoreFriend = (friend) => {
-    console.log("Ignored friend:", friend);
+  const handleIgnoreFriend = async (friendID) => {
+    console.log("Ignored friend:", friendID);
+    await ignoreFriendRequest(friendID, user);
+    updateRefresh();
   };
 
   const friendRequestElement = (index, friend) => {
@@ -94,6 +104,10 @@ function Header({ user }) {
         </button>
       </div>
     );
+  };
+
+  const updateRefresh = () => {
+    setRefresh((prevState) => !prevState);
   };
 
   const loadNotifications = () => {

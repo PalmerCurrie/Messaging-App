@@ -4,19 +4,19 @@ import DirectMessageSidebar from "./DirectMessageSidebar.js";
 import { useRef, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 import "../styles/ChatRoom.css";
-import { getDirectMessageID, 
-         getGlobalMessages, 
-         getDirectMessages, 
-         fetchUserData, 
-         fetchChatName, 
-         sendDirectMessage,
-         sendMessage,
-         deleteMessage,
-      } from "../backend/backend.js";
+import {
+  getDirectMessageID,
+  getGlobalMessages,
+  getDirectMessages,
+  fetchUserData,
+  fetchChatName,
+  sendDirectMessage,
+  sendMessage,
+  deleteMessage,
+} from "../backend/backend.js";
 import { serverTimestamp } from "firebase/firestore";
 
-
-function ChatRoom({ user, recieverID, setRecieverID }) {
+function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   // Reference the Firestore collection
   const [messages, setMessages] = useState(null);
   const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
@@ -24,7 +24,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
   const [loading, setLoading] = useState(false);
   const [userData, setUserData] = useState(null);
   const [messageUpdateTrigger, setMessageUpdateTrigger] = useState(false);
-    
+
   const [chatName, setChatName] = useState("");
 
   useEffect(() => {
@@ -40,7 +40,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
         setMessages(newDirectMessages);
       }
       setLoading(false);
-    }
+    };
     const getOtherData = async () => {
       setLoading(true);
       const data = await fetchUserData(user);
@@ -52,7 +52,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
 
     getOtherData();
     getUserMessages();
-  }, [ user, recieverID]);
+  }, [user, recieverID]);
 
   useEffect(() => {
     const getUserMessages = async () => {
@@ -64,10 +64,9 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
         const newDirectMessages = await getDirectMessages(dmID);
         setMessages(newDirectMessages);
       }
-    }
+    };
     getUserMessages();
-
-  },[messageUpdateTrigger])
+  }, [messageUpdateTrigger]);
 
   const handleSendNewMessage = async (e) => {
     e.preventDefault();
@@ -82,7 +81,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
       customUserName: userData.customUserName,
       senderID: user.uid,
       recieverID,
-    }
+    };
     if (recieverID === "global") {
       await sendMessage(messageObject);
     } else {
@@ -91,9 +90,9 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
     }
     setFormValue("");
     scrollToBottom();
-      // Trigger re-fetching
-    setMessageUpdateTrigger(prev => !prev);
-  }
+    // Trigger re-fetching
+    setMessageUpdateTrigger((prev) => !prev);
+  };
 
   const scrollToBottom = () => {
     setTimeout(() => {
@@ -107,7 +106,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
   // Handling deleting a message
   const handleDeleteMessage = async (collectionName, messageID) => {
     await deleteMessage(collectionName, messageID);
-    setMessageUpdateTrigger(prev => !prev);
+    setMessageUpdateTrigger((prev) => !prev);
   };
 
   // Outline for page Loading
@@ -142,6 +141,7 @@ function ChatRoom({ user, recieverID, setRecieverID }) {
           user={user}
           setRecieverID={setRecieverID}
           recieverID={recieverID}
+          refresh={refresh}
         />
       </div>
       <div className="centered-div">
