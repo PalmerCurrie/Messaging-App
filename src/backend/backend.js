@@ -436,6 +436,7 @@ async function ignoreFriendRequest(friendID, user) {
 
 export {
   // addUserToDatabase,
+  firestore,
   auth,
   checkIfUserExists,
   addUserToFirestore,

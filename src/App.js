@@ -36,6 +36,7 @@ function App() {
           element={
             <ChatRoom
               user={user}
+              // userID={user.uid}
               setRecieverID={setRecieverID}
               recieverID={recieverID}
               refresh={refresh}

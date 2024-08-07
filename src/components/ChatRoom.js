@@ -13,10 +13,12 @@ import {
   sendDirectMessage,
   sendMessage,
   deleteMessage,
+  firestore,
+  fetchDirectMessages,
 } from "../backend/backend.js";
-import { serverTimestamp } from "firebase/firestore";
+import { serverTimestamp, onSnapshot, collection, query, orderBy, limit } from "firebase/firestore";
 
-function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
+function ChatRoom({ user, userID, recieverID, setRecieverID, refresh }) {
   // Reference the Firestore collection
   const [messages, setMessages] = useState(null);
   const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
@@ -26,6 +28,51 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   const [messageUpdateTrigger, setMessageUpdateTrigger] = useState(false);
 
   const [chatName, setChatName] = useState("");
+
+// For real time chat message updates
+
+  useEffect(() => {
+    setLoading(true);
+    let unsubscribe = () => {};
+
+    const setupListener = async () => {
+      if (recieverID === "global") {
+        const messagesQuery = query(
+          collection(firestore, "messages"),
+          orderBy("createdAt", "desc"),
+          limit(25)
+        );
+        unsubscribe = onSnapshot(messagesQuery, handleSnapshot);
+      } else {
+        const dmID = await getDirectMessageID(user.uid, recieverID);
+        
+        if (dmID) {
+          const messagesQuery = query(
+            collection(firestore, dmID),
+            orderBy("createdAt", "desc"),
+            limit(25)
+          );
+          unsubscribe = onSnapshot(messagesQuery, handleSnapshot);
+        } else {
+          console.log("No direct message found for this receiver");
+          setLoading(false);
+        }
+      }
+    };
+
+    const handleSnapshot = (snapshot) => {
+      const newMessages = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setMessages(newMessages);
+      setLoading(false);
+    };
+
+    setupListener();
+
+    return () => unsubscribe();
+  }, [recieverID, user]);
 
   useEffect(() => {
     const getUserMessages = async () => {
@@ -49,7 +96,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
       setChatName(newChatName);
       setLoading(false);
     };
-
+    
     getOtherData();
     getUserMessages();
   }, [user]);
@@ -62,7 +109,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
       const newChatName = await fetchChatName(recieverID);
       setChatName(newChatName);
     };
-
+    setMessageUpdateTrigger((prev) => !prev);
     getOtherData();
   }, [recieverID])
 
