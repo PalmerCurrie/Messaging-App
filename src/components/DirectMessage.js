@@ -13,7 +13,6 @@ function DirectMessage({ useruid, handleDivClick, recieverID }) {
 
     getUserData();
   }, [useruid]);
-  console.log(userData);
 
   const handleClick = () => {
     handleDivClick(useruid);

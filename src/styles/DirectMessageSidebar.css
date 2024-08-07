@@ -3,7 +3,6 @@
 .container {
   display: flex;
   flex-direction: column;
-  /* border-right: 1px solid #ddd; */
   margin-top: 0px;
   padding: 20px;
   height: 100%;
@@ -14,8 +13,8 @@
 }
 
 .header h1 {
+  padding: 20px;
   margin: 0px;
-  margin-left: 20px;
   text-align: center;
 }
 

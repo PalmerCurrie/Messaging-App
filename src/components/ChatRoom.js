@@ -52,7 +52,19 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
 
     getOtherData();
     getUserMessages();
-  }, [user, recieverID]);
+  }, [user]);
+
+  // Used to update the chatName and userData when recieverID is changed in DM sidebar.
+  useEffect(() => {
+    const getOtherData = async () => {
+      const data = await fetchUserData(user);
+      setUserData(data);
+      const newChatName = await fetchChatName(recieverID);
+      setChatName(newChatName);
+    };
+
+    getOtherData();
+  }, [recieverID])
 
   useEffect(() => {
     const getUserMessages = async () => {

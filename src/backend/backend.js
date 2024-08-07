@@ -258,7 +258,7 @@ async function getDirectMessageID(user1UID, user2UID) {
   const [firstUID, secondUID] = [user1UID, user2UID].sort();
   const concatenatedUIDs = `${firstUID}-${secondUID}`;
 
-  console.log("DirectMessageID: ", concatenatedUIDs); // Placeholder for testing
+  // console.log("DirectMessageID: ", concatenatedUIDs); // Placeholder for testing
 
   return concatenatedUIDs;
 }
