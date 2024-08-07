@@ -44,6 +44,7 @@ function Header({ user, refresh, setRefresh }) {
         const userData = docSnapshot.data();
         const friendRequests = userData.friendRequests || [];
         setNotificationCount(friendRequests.length);
+        setRefresh((prev) => !prev);
       } else {
         console.log("User document does not exist");
         setNotificationCount(0);
