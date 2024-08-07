@@ -381,12 +381,6 @@ async function acceptFriendRequest(friendID, user) {
     );
 
     if (!querySnapshot.empty) {
-      // // Check if friendID is already in directMessages
-      // if (user.directMessages.includes(friendID)) {
-      //   console.log("Friend is already added.");
-      //   return;
-      // }
-
       // Update current user's document
       const userDocRef = doc(firestore, "users", user.uid);
       await updateDoc(userDocRef, {
@@ -418,12 +412,6 @@ async function ignoreFriendRequest(friendID, user) {
     );
 
     if (!querySnapshot.empty) {
-      // // Check if friendID is already in directMessages
-      // if (user.directMessages.includes(friendID)) {
-      //   console.log("Friend is already added.");
-      //   return;
-      // }
-
       // Update current user's document
       const userDocRef = doc(firestore, "users", user.uid);
       await updateDoc(userDocRef, {
