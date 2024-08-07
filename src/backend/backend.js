@@ -133,23 +133,6 @@ async function getDirectMessages(directMessageID) {
   }
 }
 
-async function getChatName(recieverID) {
-  try {
-    const userDocRef = doc(firestore, "users", recieverID);
-    const docSnap = await getDoc(userDocRef);
-    if (docSnap.exists()) {
-      // setUserData(docSnap.data());
-      // return userData?
-      const data = docSnap.data().customUserName;
-      return data;
-    } else {
-      console.log("User document does not exist");
-    }
-  } catch (error) {
-    console.log("Error getting chat name: ", error);
-  }
-}
-
 // fetchUserData
 async function fetchUserData(user) {
   if (user) {
@@ -210,17 +193,25 @@ async function fetchDirectMessages(user) {
 async function fetchChatName(recieverID) {
   if (recieverID === "global") {
     return "global";
+  } else {
+    return await getChatName(recieverID);
   }
+}
+
+async function getChatName(recieverID) {
   try {
     const userDocRef = doc(firestore, "users", recieverID);
     const docSnap = await getDoc(userDocRef);
     if (docSnap.exists()) {
-      return docSnap.data().customUserName;
+      // setUserData(docSnap.data());
+      // return userData?
+      const userName = docSnap.data().customUserName;
+      return userName;
     } else {
       console.log("User document does not exist");
     }
   } catch (error) {
-    console.error("Error fetching user data:", error);
+    console.log("Error getting chat name: ", error);
   }
 }
 
@@ -378,6 +369,8 @@ async function updateDisplayName(newDisplayName, user) {
     console.error("Error updating display name: ", error);
   }
 }
+
+// Header:
 
 async function acceptFriendRequest(friendID, user) {
   try {

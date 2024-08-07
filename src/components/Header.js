@@ -3,13 +3,9 @@ import React, { useEffect, useRef, useState } from "react";
 import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
+import FriendRequest from "./FriendRequest.js";
 
-import {
-  auth,
-  fetchUserData,
-  acceptFriendRequest,
-  ignoreFriendRequest,
-} from "../backend/backend.js";
+import { auth, fetchUserData } from "../backend/backend.js";
 
 function Header({ user, refresh, setRefresh }) {
   const [userData, setUserData] = useState(null);
@@ -72,45 +68,6 @@ function Header({ user, refresh, setRefresh }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isNotificationDropdownOpen]);
 
-  const handleAddFriend = async (friendID) => {
-    console.log("Added friend:", friendID);
-    await acceptFriendRequest(friendID, user);
-    updateRefresh();
-  };
-
-  const handleIgnoreFriend = async (friendID) => {
-    console.log("Ignored friend:", friendID);
-    await ignoreFriendRequest(friendID, user);
-    updateRefresh();
-  };
-
-  const friendRequestElement = (index, friend) => {
-    return (
-      <div className="friend-request-container">
-        <li key={index}>{friend}</li>
-        <button
-          onClick={() => {
-            handleAddFriend(friend);
-          }}
-        >
-          Add
-        </button>
-        <button
-          className="ignore"
-          onClick={() => {
-            handleIgnoreFriend(friend);
-          }}
-        >
-          Ignore
-        </button>
-      </div>
-    );
-  };
-
-  const updateRefresh = () => {
-    setRefresh((prevState) => !prevState);
-  };
-
   const loadNotifications = () => {
     if (!userData) {
       return null;
@@ -132,9 +89,14 @@ function Header({ user, refresh, setRefresh }) {
           >
             <h1>Friend Requests: </h1>
             <ul>
-              {userData?.friendRequests.map((friend, index) =>
-                friendRequestElement(index, friend)
-              )}
+              {userData?.friendRequests.map((friend, index) => (
+                <FriendRequest
+                  user={user}
+                  setRefresh={setRefresh}
+                  index={index}
+                  friendID={friend}
+                />
+              ))}
             </ul>
           </div>
         )}
@@ -157,20 +119,11 @@ function Header({ user, refresh, setRefresh }) {
             </li>
           </ul>
         </nav>
-        {!user ? (
-          <p> </p>
-        ) : (
-          // <div></div>
-          loadNotifications() // Call the function here
-        )}
+        {!user ? <p> </p> : loadNotifications()}
 
         <Link to="/profile">
           <div className="profile">
-            {!user ? (
-              <SignIn auth={auth} />
-            ) : (
-              loadUserProfile() // Call the function here
-            )}
+            {!user ? <SignIn auth={auth} /> : loadUserProfile()}
           </div>
         </Link>
       </header>
