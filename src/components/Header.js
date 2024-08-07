@@ -4,8 +4,9 @@ import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
 import FriendRequest from "./FriendRequest.js";
+import { onSnapshot, doc} from "firebase/firestore";
 
-import { auth, fetchUserData } from "../backend/backend.js";
+import { auth, fetchUserData, firestore } from "../backend/backend.js";
 
 function Header({ user, refresh, setRefresh }) {
   const [userData, setUserData] = useState(null);
@@ -28,6 +29,35 @@ function Header({ user, refresh, setRefresh }) {
     };
     getNotificationCount();
   }, [userData]);
+
+
+  useEffect(() => {
+    if (!user || !user.uid) {
+      console.error("User is not defined or does not have a UID");
+      return;
+    }
+
+    const userDocRef = doc(firestore, "users", user.uid);
+
+    const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+      if (docSnapshot.exists()) {
+        const userData = docSnapshot.data();
+        const friendRequests = userData.friendRequests || [];
+        setNotificationCount(friendRequests.length);
+      } else {
+        console.log("User document does not exist");
+        setNotificationCount(0);
+      }
+    }, (error) => {
+      console.error("Error fetching notifications:", error);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+
+
+
 
   const loadUserProfile = () => {
     return userData ? (

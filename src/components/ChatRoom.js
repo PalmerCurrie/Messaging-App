@@ -14,11 +14,10 @@ import {
   sendMessage,
   deleteMessage,
   firestore,
-  fetchDirectMessages,
 } from "../backend/backend.js";
 import { serverTimestamp, onSnapshot, collection, query, orderBy, limit } from "firebase/firestore";
 
-function ChatRoom({ user, userID, recieverID, setRecieverID, refresh }) {
+function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   // Reference the Firestore collection
   const [messages, setMessages] = useState(null);
   const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
