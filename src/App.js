@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import ChatRoom from "./components/ChatRoom.js";
 import Header from "./components/Header.js";
 import UserProfile from "./components/UserProfile.js";
+import HomePage from "./components/HomePage.js";
 import "./App.css";
 
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -31,6 +32,7 @@ function App() {
       <Header user={user} refresh={refresh} setRefresh={setRefresh} />
       <Routes>
         <Route path="/profile" element={<UserProfile user={user} />} />
+        <Route path="/" element={<HomePage />} />
         <Route
           path="/message"
           element={

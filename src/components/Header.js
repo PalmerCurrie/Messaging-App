@@ -177,7 +177,7 @@ function Header({ user, refresh, setRefresh }) {
   return (
     <>
       <header className="header">
-        <Link to="/message" className="logo-link">
+        <Link to="/" className="logo-link">
           <div className="logo">
             <span className="logo-text">chat.</span>
           </div>
