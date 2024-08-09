@@ -3,6 +3,7 @@ import ChatRoom from "./components/ChatRoom.js";
 import Header from "./components/Header.js";
 import UserProfile from "./components/UserProfile.js";
 import HomePage from "./components/HomePage.js";
+import { ThemeProvider } from "./components/ThemeProvider.js";
 import "./App.css";
 
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -28,25 +29,27 @@ function App() {
   const [refresh, setRefresh] = useState(false);
 
   return (
-    <Router>
-      <Header user={user} refresh={refresh} setRefresh={setRefresh} />
-      <Routes>
-        <Route path="/profile" element={<UserProfile user={user} />} />
-        <Route path="/" element={<HomePage />} />
-        <Route
-          path="/message"
-          element={
-            <ChatRoom
-              user={user}
-              // userID={user.uid}
-              setRecieverID={setRecieverID}
-              recieverID={recieverID}
-              refresh={refresh}
-            />
-          }
-        />
-      </Routes>
-    </Router>
+    <ThemeProvider>
+      <Router>
+        <Header user={user} refresh={refresh} setRefresh={setRefresh} />
+        <Routes>
+          <Route path="/profile" element={<UserProfile user={user} />} />
+          <Route path="/" element={<HomePage />} />
+          <Route
+            path="/message"
+            element={
+              <ChatRoom
+                user={user}
+                // userID={user.uid}
+                setRecieverID={setRecieverID}
+                recieverID={recieverID}
+                refresh={refresh}
+              />
+            }
+          />
+        </Routes>
+      </Router>
+    </ThemeProvider>
   );
 }
 

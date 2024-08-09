@@ -1,5 +1,36 @@
-/* styles.css */
+/* Define theme colors as CSS variables */
+:root {
+  --chatroom-bg-color: #ffffff;
+  --chatroom-header-bg-color: #007bff;
+  --chatroom-header-text-color: white;
+  --chatroom-header-border-color: #006bdd;
+  --chatroom-loading-bg-color: #ccc;
+  --chatroom-loading-text-color: white;
+  --message-form-bg-color: #f0f0f0;
+  --message-form-border-color: #ccc;
+  --button-bg-color: #007bff;
+  --button-text-color: white;
+  --scrollbar-thumb-color: #ccc;
+  --scrollbar-track-color: #f0f0f0;
+}
 
+/* Dark mode colors */
+.dark-mode {
+  --chatroom-bg-color: #333333;
+  --chatroom-header-bg-color: #007bff;
+  --chatroom-header-text-color: #f0f0f0;
+  --chatroom-header-border-color: #555;
+  --chatroom-loading-bg-color: #555;
+  --chatroom-loading-text-color: #f0f0f0;
+  --message-form-bg-color: #444;
+  --message-form-border-color: #555;
+  --button-bg-color: #444;
+  --button-text-color: #f0f0f0;
+  --scrollbar-thumb-color: #555;
+  --scrollbar-track-color: #333;
+}
+
+/* General styling */
 .wrapper {
   display: grid;
   grid-template-columns: 1fr 2fr 1fr;
@@ -30,19 +61,20 @@
   overflow-x: hidden;
   position: relative;
   scrollbar-width: thin;
-  scrollbar-color: #ccc #f0f0f0;
+  scrollbar-color: var(--scrollbar-thumb-color) var(--scrollbar-track-color);
+  background-color: var(--chatroom-bg-color);
 }
 
 .chatroom-header {
   width: 100%;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--chatroom-header-bg-color);
+  color: var(--chatroom-header-text-color);
   padding: 10px;
   text-align: center;
   position: sticky;
   top: 0;
   z-index: 1;
-  border-bottom: 1px solid #006bdd;
+  border-bottom: 1px solid var(--chatroom-header-border-color);
   font-size: 24px;
 }
 
@@ -54,14 +86,14 @@
 
 .chatroom-header-loading {
   width: 100%;
-  background-color: #ccc;
-  color: white;
+  background-color: var(--chatroom-loading-bg-color);
+  color: var(--chatroom-loading-text-color);
   padding: 10px;
   text-align: center;
   position: sticky;
   top: 0;
   z-index: 1;
-  border-bottom: 1px solid #cccccce5;
+  border-bottom: 1px solid var(--chatroom-loading-bg-color);
   font-size: 24px;
 }
 
@@ -84,11 +116,11 @@
 }
 
 .chatroom-container::-webkit-scrollbar-track {
-  background: #f0f0f0;
+  background: var(--scrollbar-track-color);
 }
 
 .chatroom-container::-webkit-scrollbar-thumb {
-  background-color: #ccc;
+  background-color: var(--scrollbar-thumb-color);
   border-radius: 4px;
 }
 
@@ -96,23 +128,24 @@
   display: flex;
   justify-content: space-between;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: var(--message-form-bg-color);
   position: sticky;
   bottom: 0;
+  border-top: 1px solid var(--message-form-border-color);
 }
 
 .message-form input {
   flex: 1;
   padding: 10px;
-  border: 1px solid #ccc;
+  border: 1px solid var(--message-form-border-color);
   border-radius: 4px;
   margin-right: 10px;
 }
 
 .message-form button {
   padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
+  background-color: var(--button-bg-color);
+  color: var(--button-text-color);
   border: none;
   border-radius: 4px;
   cursor: pointer;

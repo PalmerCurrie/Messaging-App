@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import "../styles/DirectMessage.css";
 import { fetchUserDataByID } from "../backend/backend";
+import { useTheme } from "./ThemeProvider.js";
 
 function DirectMessage({ useruid, handleDivClick, recieverID }) {
+  const { theme } = useTheme();
   const [userData, setUserData] = useState(null);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ function DirectMessage({ useruid, handleDivClick, recieverID }) {
     <div
       className={`direct-message-container ${
         useruid === recieverID ? "selected" : ""
-      }`}
+      } ${theme}`}
       onClick={handleClick}
     >
       {userData ? (

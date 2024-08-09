@@ -4,11 +4,13 @@ import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
 import FriendRequest from "./FriendRequest.js";
-import { onSnapshot, doc} from "firebase/firestore";
-
+import { onSnapshot, doc } from "firebase/firestore";
 import { auth, fetchUserData, firestore } from "../backend/backend.js";
+import { useTheme } from "./ThemeProvider.js";
 
 function Header({ user, refresh, setRefresh }) {
+  const { theme, toggleTheme } = useTheme();
+
   const [userData, setUserData] = useState(null);
   const [notificationCount, setNotificationCount] = useState(0);
 
@@ -30,7 +32,6 @@ function Header({ user, refresh, setRefresh }) {
     getNotificationCount();
   }, [userData]);
 
-
   useEffect(() => {
     if (!user || !user.uid) {
       console.error("User is not defined or does not have a UID");
@@ -39,30 +40,30 @@ function Header({ user, refresh, setRefresh }) {
 
     const userDocRef = doc(firestore, "users", user.uid);
 
-    const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
-      if (docSnapshot.exists()) {
-        const userData = docSnapshot.data();
-        const friendRequests = userData.friendRequests || [];
-        setNotificationCount(friendRequests.length);
-        setRefresh((prev) => !prev);
-      } else {
-        console.log("User document does not exist");
-        setNotificationCount(0);
+    const unsubscribe = onSnapshot(
+      userDocRef,
+      (docSnapshot) => {
+        if (docSnapshot.exists()) {
+          const userData = docSnapshot.data();
+          const friendRequests = userData.friendRequests || [];
+          setNotificationCount(friendRequests.length);
+          setRefresh((prev) => !prev);
+        } else {
+          console.log("User document does not exist");
+          setNotificationCount(0);
+        }
+      },
+      (error) => {
+        console.error("Error fetching notifications:", error);
       }
-    }, (error) => {
-      console.error("Error fetching notifications:", error);
-    });
+    );
 
     return () => unsubscribe();
   }, [user]);
 
-
-
-
-
   const loadUserProfile = () => {
     return userData ? (
-      <div className="header-profile-container">
+      <div className={`header-profile-container ${theme}`}>
         <div className="header-img-container">
           <img src={userData.photoURL} alt="User Profile" />
         </div>
@@ -82,7 +83,6 @@ function Header({ user, refresh, setRefresh }) {
     );
   };
 
-  // Notifications:
   let displayCount = "";
 
   if (notificationCount > 0) {
@@ -110,7 +110,6 @@ function Header({ user, refresh, setRefresh }) {
     }
   };
 
-  // For handling clicks outside of notification dropdown menu
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
@@ -176,7 +175,7 @@ function Header({ user, refresh, setRefresh }) {
 
   return (
     <>
-      <header className="header">
+      <header className={`header ${theme}`}>
         <Link to="/" className="logo-link">
           <div className="logo">
             <span className="logo-text">chat.</span>
@@ -189,6 +188,9 @@ function Header({ user, refresh, setRefresh }) {
             </li>
           </ul>
         </nav>
+        <div className="toggle-theme-button">
+          <button onClick={toggleTheme}>Toggle Theme</button>
+        </div>
         {!user ? <p> </p> : loadNotifications()}
 
         <Link to="/profile">

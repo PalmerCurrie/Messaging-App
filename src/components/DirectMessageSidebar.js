@@ -2,9 +2,11 @@ import "../styles/DirectMessageSidebar.css";
 import { useEffect, useState } from "react";
 import DirectMessage from "./DirectMessage.js";
 import { fetchDirectMessages, addFriend } from "../backend/backend.js";
+import { useTheme } from "./ThemeProvider.js";
 
 function DirectMessageSidebar({ user, setRecieverID, recieverID, refresh }) {
   const [inputValue, setInputValue] = useState("");
+  const { theme } = useTheme();
 
   const handleChatPreviewClick = (id) => {
     setRecieverID(id);
@@ -51,7 +53,7 @@ function DirectMessageSidebar({ user, setRecieverID, recieverID, refresh }) {
     recieverID === "global" ? "chat-preview-selected" : "chat-preview";
 
   return (
-    <div className="container">
+    <div className={`container ${theme}`}>
       <div className="header">
         <h1>Direct Messages</h1>
       </div>

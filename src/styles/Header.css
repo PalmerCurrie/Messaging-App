@@ -1,14 +1,14 @@
 /* Header.css */
-
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--header-bg-color);
   padding: 5px 30px;
   margin: 0px;
   position: relative;
   max-height: 50px;
+  color: var(--header-text-color);
 }
 
 .logo {
@@ -21,7 +21,7 @@
   font-family: "Arial", sans-serif;
   font-size: 40px;
   font-weight: bold;
-  color: black;
+  color: var(--header-text-color);
 }
 
 .nav-links {
@@ -43,7 +43,7 @@
 
 .nav-links a {
   text-decoration: none;
-  color: black;
+  color: var(--nav-link-color);
   font-size: 18px;
 }
 
@@ -59,8 +59,6 @@
   align-items: center;
   border: 20px;
   background-color: rgba(128, 128, 128, 0.33);
-  padding: 5px;
-  border: #cbd5e1;
   padding: 10px;
   border: none;
   border-radius: 20px;
@@ -69,7 +67,7 @@
 .search-bar button {
   padding: 10px 15px;
   font-size: 16px;
-  background-color: #007bff;
+  background-color: var(--button-bg);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -78,7 +76,7 @@
 }
 
 .search-bar button:hover {
-  background-color: #0056b3;
+  background-color: var(--button-hover-bg);
 }
 
 .header-profile-container {
@@ -164,8 +162,8 @@
   top: 135%;
   left: -50%;
   width: 310%;
-  background-color: white;
-  border: 1px solid #ccc;
+  background-color: var(--notification-bg-color);
+  border: 1px solid var(--notification-border-color);
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   padding: 10px;
   z-index: 1000;
@@ -176,8 +174,8 @@
 .notification-dropdown-container h1 {
   margin: 0;
   padding: 10px;
-  background-color: #f4f4f4;
-  border-bottom: 1px solid #ddd;
+  background-color: var(--notification-header-bg-color);
+  border-bottom: 1px solid var(--notification-border-color);
 }
 
 .notification-dropdown-container ul {
@@ -191,7 +189,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid var(--notification-border-color);
 }
 
 .friend-request-container li {
@@ -202,7 +200,7 @@
 }
 
 .friend-request-container button {
-  background-color: #007bff;
+  background-color: var(--button-bg);
   border: none;
   color: white;
   padding: 6px 12px;
@@ -214,15 +212,15 @@
 }
 
 .friend-request-container button:hover {
-  background-color: #0871e0;
+  background-color: var(--button-hover-bg);
 }
 
 .friend-request-container button.ignore {
-  background-color: #dc3545;
+  background-color: var(--ignore-button-bg-color);
 }
 
 .friend-request-container button.ignore:hover {
-  background-color: #c82333;
+  background-color: var(--ignore-button-hover-bg-color);
 }
 
 /* For Notification Bell */

@@ -15,9 +15,18 @@ import {
   deleteMessage,
   firestore,
 } from "../backend/backend.js";
-import { serverTimestamp, onSnapshot, collection, query, orderBy, limit } from "firebase/firestore";
+import {
+  serverTimestamp,
+  onSnapshot,
+  collection,
+  query,
+  orderBy,
+  limit,
+} from "firebase/firestore";
+import { useTheme } from "./ThemeProvider.js";
 
 function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
+  const { theme } = useTheme();
   // Reference the Firestore collection
   const [messages, setMessages] = useState(null);
   const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
@@ -28,7 +37,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
 
   const [chatName, setChatName] = useState("");
 
-// For real time chat message updates
+  // For real time chat message updates
 
   useEffect(() => {
     setLoading(true);
@@ -44,7 +53,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
         unsubscribe = onSnapshot(messagesQuery, handleSnapshot);
       } else {
         const dmID = await getDirectMessageID(user.uid, recieverID);
-        
+
         if (dmID) {
           const messagesQuery = query(
             collection(firestore, dmID),
@@ -62,7 +71,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
     const handleSnapshot = (snapshot) => {
       const newMessages = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
       setMessages(newMessages);
       setLoading(false);
@@ -95,7 +104,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
       setChatName(newChatName);
       setLoading(false);
     };
-    
+
     getOtherData();
     getUserMessages();
   }, [user]);
@@ -110,7 +119,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
     };
     setMessageUpdateTrigger((prev) => !prev);
     getOtherData();
-  }, [recieverID])
+  }, [recieverID]);
 
   useEffect(() => {
     const getUserMessages = async () => {
@@ -170,7 +179,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   // Outline for page Loading
   if (loading || !userData) {
     return (
-      <div className="wrapper">
+      <div className={`wrapper ${theme}`}>
         <div className="left-div"></div>
         <div className="centered-div">
           <div className="chatroom-container">
@@ -193,7 +202,7 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   }
 
   return (
-    <div className="wrapper">
+    <div className={`wrapper ${theme}`}>
       <div className="left-div">
         <DirectMessageSidebar
           user={user}

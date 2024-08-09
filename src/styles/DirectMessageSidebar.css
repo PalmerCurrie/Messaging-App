@@ -6,6 +6,8 @@
   margin-top: 0px;
   padding: 20px;
   height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-color);
 }
 
 .header {
@@ -16,17 +18,19 @@
   padding: 20px;
   margin: 0px;
   text-align: center;
+  color: var(--header-text-color);
 }
 
 h1 {
   font-size: 1.5rem;
   margin-bottom: 20px;
-  color: #333;
+  color: var(--text-color);
 }
 
 .chat-preview {
-  background-color: #fff;
-  border: 1px solid #ddd;
+  background-color: var(--bg-color);
+  border: 1px solid var(--notification-border-color);
+
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
@@ -35,17 +39,18 @@ h1 {
 }
 
 .chat-preview-selected {
-  border: 1px solid #ddd;
+  border: 1px solid var(--notification-border-color);
+  color: var(bg);
   border-radius: 5px;
   padding: 10px;
   cursor: pointer;
   transition: background-color 0.3s;
   text-align: center;
-  background-color: #007bff;
+  background-color: var(--button-bg);
 }
 
 .chat-preview-selected h1 {
-  color: white;
+  color: var(--header-text-color);
 }
 
 .chat-preview:hover {
@@ -64,21 +69,21 @@ h1 {
 
 .add-user input {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--notification-border-color);
   border-radius: 5px;
   margin-right: 10px;
 }
 
 .add-user button {
   padding: 10px;
-  background-color: #4caf50;
-  color: white;
+  background-color: var(--button-bg);
+  color: var(--header-text-color);
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .add-user button:hover {
-  background-color: #45a049;
+  background-color: var(--button-hover-bg);
   transition: background-color 0.3s;
 }

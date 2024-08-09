@@ -10,8 +10,9 @@
   padding: 20px;
   height: 33%;
   width: 40%;
-  background-color: #f8f9fa;
-  border: 1px solid #e0e0e0;
+  background-color: var(--bg-color);
+  border: 1px solid var(--notification-border-color);
+  color: var(--text-color);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   display: grid;
@@ -63,17 +64,20 @@
   align-items: center;
   max-height: 40px;
   padding: 10px 15px;
-  background-color: #007bff;
+  background-color: var(--button-bg);
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    transform 0.3s,
+    box-shadow 0.3s;
 }
 
 .profile-container button:hover {
-  background-color: #0871e0;
+  background-color: var(--button-hover-bg);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
   transform: translateY(-2px);
 }
@@ -116,5 +120,8 @@
   background-color: #ccc;
   border: none;
   border-radius: 4px;
-  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  transition:
+    background-color 0.3s,
+    transform 0.3s,
+    box-shadow 0.3s;
 }

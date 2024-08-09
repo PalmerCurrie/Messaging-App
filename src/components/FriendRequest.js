@@ -6,8 +6,10 @@ import {
   ignoreFriendRequest,
   getChatName,
 } from "../backend/backend.js";
+import { useTheme } from "./ThemeProvider.js";
 
 function FriendRequest({ user, setRefresh, index, friendID }) {
+  const { theme } = useTheme();
   const [chatName, setChatName] = useState("");
 
   useEffect(() => {
@@ -36,7 +38,7 @@ function FriendRequest({ user, setRefresh, index, friendID }) {
   };
 
   return (
-    <div className="friend-request-container">
+    <div className={`friend-request-container ${theme} `}>
       <li key={index}> {chatName ? chatName : "..."} </li>
       <button
         onClick={() => {

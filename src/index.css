@@ -1,14 +1,57 @@
+/* global.css */
+/* global.css */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --button-bg: #007bff;
+  --button-hover-bg: #0056b3;
+  --header-bg-color: #fff;
+  --header-text-color: #000;
+  --notification-bg-color: #fff;
+  --notification-border-color: #ccc;
+  --notification-header-bg-color: #f4f4f4;
+  --ignore-button-bg-color: #dc3545;
+  --ignore-button-hover-bg-color: #c82333;
+  --dark-bg-color: #333333;
+  --dark-text-color: #ffffff;
+  --dark-button-bg: #1a73e8;
+  --dark-button-hover-bg: #0a56c2;
+  --dark-header-bg-color: #333;
+  --dark-header-text-color: #fff;
+  --dark-notification-bg-color: #222;
+  --dark-notification-border-color: #444;
+  --dark-notification-header-bg-color: #444;
+  --dark-ignore-button-bg-color: #c82333;
+  --dark-ignore-button-hover-bg-color: #ab2d27;
+}
+
+.dark-mode {
+  --bg-color: var(--dark-bg-color);
+  --text-color: var(--dark-text-color);
+  --button-bg: var(--dark-button-bg);
+  --button-hover-bg: var(--dark-button-hover-bg);
+  --header-bg-color: var(--dark-header-bg-color);
+  --header-text-color: var(--dark-header-text-color);
+  --notification-bg-color: var(--dark-notification-bg-color);
+  --notification-border-color: var(--dark-notification-border-color);
+  --notification-header-bg-color: var(--dark-notification-header-bg-color);
+  --ignore-button-bg-color: var(--dark-ignore-button-bg-color);
+  --ignore-button-hover-bg-color: var(--dark-ignore-button-hover-bg-color);
+}
+
 body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 .root {

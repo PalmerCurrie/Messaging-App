@@ -1,5 +1,6 @@
 import "../styles/ChatMessage.css";
 import React, { useState, useRef, useEffect } from "react";
+import { useTheme } from "./ThemeProvider.js";
 
 function ChatMessage({
   key,
@@ -9,12 +10,12 @@ function ChatMessage({
   isGlobal,
   handleDeleteMessage,
 }) {
+  const { theme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const popupRef = useRef(null);
 
-  const { text, photoURL, createdAt, displayName, customUserName } =
-    message;
+  const { text, photoURL, createdAt, displayName, customUserName } = message;
 
   const handleClickOutside = (event) => {
     if (popupRef.current && !popupRef.current.contains(event.target)) {
@@ -67,21 +68,16 @@ function ChatMessage({
     setIsMenuOpen(!isMenuOpen);
   };
 
-  
-
   const onDeleteMessageClick = async () => {
     if (isGlobal) {
-      handleDeleteMessage("messages", message.id); 
+      handleDeleteMessage("messages", message.id);
     } else {
-
       // deleteMessage(directMessageID, message.id);
-
     }
   };
-  
 
   return (
-    <div className={`message ${messageClass}`} key={key}>
+    <div className={`message ${messageClass} ${theme}`} key={key}>
       <div className="message-content">
         {messageClass === "received" && (
           <img src={photoURL} alt="User avatar" className="avatar" />

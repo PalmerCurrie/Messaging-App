@@ -3,8 +3,10 @@ import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import { useEffect, useState } from "react";
 import { fetchUserData, updateDisplayName } from "../backend/backend.js";
+import { useTheme } from "./ThemeProvider.js";
 
 function UserProfile({ user, auth, firestore }) {
+  const { theme } = useTheme();
   const [newName, setNewName] = useState("");
   const [editMode, setEditMode] = useState(false);
 
@@ -19,15 +21,14 @@ function UserProfile({ user, auth, firestore }) {
     getUserData();
   }, [user]);
 
-
   const openDisplayNameForm = () => {
     setEditMode(true);
-  }
+  };
 
   const handleUpdateDisplayName = () => {
     updateDisplayName(newName, user);
     setEditMode(false);
-  }
+  };
 
   if (!user) {
     return (
@@ -50,7 +51,7 @@ function UserProfile({ user, auth, firestore }) {
   // Ensure userData is fetched before rendering
   if (!userData) {
     return (
-      <div className="profile-page">
+      <div className={`profile-page ${theme} `}>
         <div className="profile-container">
           <div className="img-container">
             <div className="placeholder-img"></div>

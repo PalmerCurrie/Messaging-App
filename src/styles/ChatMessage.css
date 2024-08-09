@@ -11,14 +11,14 @@
 
 .sent {
   align-self: flex-end;
-  background-color: #007bff;
+  background-color: var(--button-bg);
   color: white;
 }
 
 .received {
   align-self: flex-start;
-  background-color: #f0f0f0;
-  color: #333;
+  background-color: var(--notification-header-bg-color);
+  color: var(--header-text-color);
 }
 
 .message-content {
@@ -91,7 +91,6 @@
 .popup-menu-item:hover {
   background-color: #f5f5f5;
 }
-
 
 .message.sent .popup-menu {
   display: none;
