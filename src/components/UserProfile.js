@@ -1,7 +1,11 @@
 import "../styles/UserProfile.css";
 import SignOut from "./SignOut";
 import { useEffect, useState } from "react";
-import { fetchUserData, updateDisplayName } from "../backend/backend.js";
+import {
+  fetchUserData,
+  updateDisplayName,
+  resetPassword,
+} from "../backend/backend.js";
 import { useTheme } from "./ThemeProvider.js";
 import EmailSignIn from "./EmailSignIn.js";
 
@@ -28,6 +32,10 @@ function UserProfile({ user, auth, firestore }) {
   const handleUpdateDisplayName = () => {
     updateDisplayName(newName, user);
     setEditMode(false);
+  };
+
+  const handleResetPassword = () => {
+    resetPassword(userData.email);
   };
 
   if (!user) {
@@ -101,6 +109,7 @@ function UserProfile({ user, auth, firestore }) {
             </button>
           )}
           <SignOut auth={auth} />
+          <button onClick={handleResetPassword}> Reset Password </button>
         </div>
       </div>
     </div>
