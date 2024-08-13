@@ -7,7 +7,9 @@
 }
 
 .profile-container {
-  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  padding: 25px;
   height: 33%;
   width: 40%;
   background-color: var(--bg-color);

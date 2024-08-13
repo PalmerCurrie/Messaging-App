@@ -11,7 +11,6 @@ function EmailSignIn() {
     e.preventDefault();
     try {
       await signInWithEmail(email, password);
-      console.log("Signed in successfully");
     } catch (error) {
       setError(error.message);
       console.error("Error signing in:", error.message);

@@ -1,0 +1,54 @@
+.home-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 86.8vh;
+  padding: 20px;
+  text-align: center;
+  color: var(--bg-color);
+  overflow-y: auto;
+}
+
+.home-container h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+}
+
+.home-container .home-description {
+  font-size: 1.5rem;
+  color: var(--text-color);
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.shop-now-button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 15px;
+  font-size: 16px;
+  background-color: var(--button-bg);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: fit-content;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+
+.shop-now-button:hover {
+  background-color: var(--button-hover-bg);
+}
+
+.shop-now-button .button {
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  outline: none;
+  color: white;
+  font-size: 18px;
+  font-weight: bold;
+}

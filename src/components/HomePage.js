@@ -1,17 +1,19 @@
-/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react/prop-types */
+import "../styles/HomePage.css";
 import { Link } from "react-router-dom";
-function HomePage({ user }) {
-  // Reference the Firestore collection
 
+function HomePage() {
   return (
-    <div className="">
-        <h1>Greetings! Welcome to chat.</h1>
-
+    <div className="home-container">
+      <h1>Welcome to chat.</h1>
+      <p className="home-description">
+        An online messgaing application for all your needs!
+      </p>
+      <div className="shop-now-button">
         <Link to="/message">
-          <div className="profile">
-            <h1>Click here to view your messages!</h1>
-          </div>
+          <button className="button">Chat Now</button>
         </Link>
+      </div>
     </div>
   );
 }
