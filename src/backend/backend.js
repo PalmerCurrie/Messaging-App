@@ -21,6 +21,9 @@ import {
 import {
   signInWithPopup,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   getAuth,
 } from "firebase/auth";
@@ -40,10 +43,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
-
-// function addUserToDatabase(user) {
-//     checkIfUserExists(user);
-// }
 
 function checkIfUserExists(user) {
   const usersRef = collection(firestore, "users");
@@ -66,16 +65,18 @@ function checkIfUserExists(user) {
 
 // Add User to Firestore Database if user does not exist already
 async function addUserToFirestore(userData) {
+  const defaultPhotoURL = "/default-profile-photo.jpg";
   try {
     const userRef = doc(firestore, "users", userData.uid);
     await setDoc(userRef, {
       uid: userData.uid,
       email: userData.email,
-      displayName: userData.displayName,
-      photoURL: userData.photoURL,
+      displayName: userData.displayName || userData.email,
+      photoURL: userData.photoURL || defaultPhotoURL,
       createdAt: serverTimestamp(),
-      customUserName: userData.displayName,
+      customUserName: userData.displayName || userData.email,
       directMessages: [],
+      friendRequests: [],
     });
 
     console.log("User added to Firestore with ID: ", userData.uid);
@@ -342,9 +343,52 @@ async function addFriend(userEmail, user) {
 
 function signInWithGoogle() {
   const provider = new GoogleAuthProvider();
-  signInWithPopup(auth, provider);
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      const user = result.user;
+      console.log("Google sign-in:", user);
+    })
+    .catch((error) => {
+      console.error("Error signing in with Google:", error.message);
+    });
 }
 
+// Email Sign-Up
+function signUpWithEmail(email, password) {
+  createUserWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log("User signed up:", user);
+    })
+    .catch((error) => {
+      console.error("Error signing up:", error.message);
+    });
+}
+
+// Email Sign-In
+function signInWithEmail(email, password) {
+  signInWithEmailAndPassword(auth, email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      console.log("User signed in:", user);
+    })
+    .catch((error) => {
+      console.error("Error signing in:", error.message);
+    });
+}
+
+// Password Reset
+function resetPassword(email) {
+  sendPasswordResetEmail(auth, email)
+    .then(() => {
+      console.log("Password reset email sent");
+    })
+    .catch((error) => {
+      console.error("Error resetting password:", error.message);
+    });
+}
+
+// Sign Out
 function handleSignOut() {
   auth.currentUser && signOut(auth);
 }
@@ -457,4 +501,7 @@ export {
   updateDisplayName,
   acceptFriendRequest,
   ignoreFriendRequest,
+  resetPassword,
+  signInWithEmail,
+  signUpWithEmail,
 };

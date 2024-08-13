@@ -1,9 +1,9 @@
 import "../styles/UserProfile.css";
-import SignIn from "./SignIn";
 import SignOut from "./SignOut";
 import { useEffect, useState } from "react";
 import { fetchUserData, updateDisplayName } from "../backend/backend.js";
 import { useTheme } from "./ThemeProvider.js";
+import EmailSignIn from "./EmailSignIn.js";
 
 function UserProfile({ user, auth, firestore }) {
   const { theme } = useTheme();
@@ -41,7 +41,7 @@ function UserProfile({ user, auth, firestore }) {
             <h1>Please Sign In</h1>
           </div>
           <div className="button-container">
-            <SignIn auth={auth} firestore={firestore} />
+            <EmailSignIn />
           </div>
         </div>
       </div>

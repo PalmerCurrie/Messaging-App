@@ -27,7 +27,6 @@ import { useTheme } from "./ThemeProvider.js";
 
 function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   const { theme } = useTheme();
-  // Reference the Firestore collection
   const [messages, setMessages] = useState(null);
   const messagesContainerRef = useRef(null); // Used to scroll down messages div on message send.
   const [formValue, setFormValue] = useState("");
@@ -38,7 +37,6 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
   const [chatName, setChatName] = useState("");
 
   // For real time chat message updates
-
   useEffect(() => {
     setLoading(true);
     let unsubscribe = () => {};
@@ -143,8 +141,8 @@ function ChatRoom({ user, recieverID, setRecieverID, refresh }) {
       id: uniqueID,
       text: formValue,
       createdAt: serverTimestamp(),
-      photoURL: user.photoURL,
-      displayName: user.displayName,
+      photoURL: userData.photoURL,
+      displayName: userData.displayName,
       customUserName: userData.customUserName,
       senderID: user.uid,
       recieverID,

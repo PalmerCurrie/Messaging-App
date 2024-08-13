@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef, useState } from "react";
-import SignIn from "./SignIn";
 import "../styles/Header.css";
 import { Link } from "react-router-dom";
 import FriendRequest from "./FriendRequest.js";
@@ -173,6 +172,10 @@ function Header({ user, refresh, setRefresh }) {
     );
   };
 
+  const goToUserProfile = () => {
+    <Link to="/profile" className="logo-link"></Link>;
+  };
+
   return (
     <>
       <header className={`header ${theme}`}>
@@ -195,7 +198,11 @@ function Header({ user, refresh, setRefresh }) {
 
         <Link to="/profile">
           <div className="profile">
-            {!user ? <SignIn auth={auth} /> : loadUserProfile()}
+            {!user ? (
+              <button onClick={goToUserProfile}> Sign in </button>
+            ) : (
+              loadUserProfile()
+            )}
           </div>
         </Link>
       </header>
