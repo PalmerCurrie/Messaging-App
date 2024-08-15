@@ -1,3 +1,10 @@
+<script type="text/javascript">
+  if (window.location.search.includes("redirectTo=")) {
+    var redirectTo = window.location.search.split("redirectTo=")[1];
+    window.history.replaceState(null, "", redirectTo);
+  }
+</script>
+
 <!doctype html>
 <html lang="en">
   <head>
