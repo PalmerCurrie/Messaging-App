@@ -173,13 +173,13 @@ function Header({ user, refresh, setRefresh }) {
   };
 
   const goToUserProfile = () => {
-    <Link to="/profile" className="logo-link"></Link>;
+    <Link to="/Messaging-App/profile" className="logo-link"></Link>;
   };
 
   return (
     <>
       <header className={`header ${theme}`}>
-        <Link to="/" className="logo-link">
+        <Link to="/Messaging-App/" className="logo-link">
           <div className="logo">
             <span className="logo-text">chat.</span>
           </div>
@@ -187,7 +187,7 @@ function Header({ user, refresh, setRefresh }) {
         <nav className="nav-links">
           <ul>
             <li>
-              <Link to="/message">Messages</Link>
+              <Link to="/Messaging-App/message">Messages</Link>
             </li>
           </ul>
         </nav>
@@ -196,7 +196,7 @@ function Header({ user, refresh, setRefresh }) {
         </div>
         {!user ? <p> </p> : loadNotifications()}
 
-        <Link to="/profile">
+        <Link to="/Messaging-App/profile">
           <div className="profile">
             {!user ? (
               <button onClick={goToUserProfile}> Sign in </button>

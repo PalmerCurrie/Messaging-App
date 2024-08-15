@@ -33,10 +33,13 @@ function App() {
       <Router>
         <Header user={user} refresh={refresh} setRefresh={setRefresh} />
         <Routes>
-          <Route path="/profile" element={<UserProfile user={user} />} />
-          <Route path="/" element={<HomePage />} />
           <Route
-            path="/message"
+            path="/Messaging-App/profile"
+            element={<UserProfile user={user} />}
+          />
+          <Route path="/Messaging-App/" element={<HomePage />} />
+          <Route
+            path="/Messaging-App/message"
             element={
               <ChatRoom
                 user={user}
