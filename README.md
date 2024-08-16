@@ -1,6 +1,6 @@
 # Messaging App
 Messaging App made with JavaScript + React, using Firebase Cloud Firestore for User Authentication, and managing the database.
-
+[Messaging App Preview](https://palmercurrie.github.io/Messaging-App/)
 Chat Room
 ![image](https://github.com/user-attachments/assets/6819920c-38ae-4a3e-884f-dd35694e582d)
 User Profile
